@@ -17,7 +17,7 @@
 // under the License.
 //
 
-package pf
+package pfunc
 
 import (
 	"errors"

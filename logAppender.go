@@ -17,14 +17,14 @@
 // under the License.
 //
 
-package pf
+package pfunc
 
 import (
 	"context"
 	"time"
 
 	"github.com/apache/pulsar-client-go/pulsar"
-	log "github.com/apache/pulsar/pulsar-function-go/logutil"
+	log "andy.dev/pfunc/logutil"
 )
 
 type LogAppender struct {

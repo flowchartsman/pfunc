@@ -22,9 +22,9 @@ package main
 import (
 	"context"
 
-	"github.com/apache/pulsar/pulsar-function-go/pf"
+	"andy.dev/pfunc"
 
-	log "github.com/apache/pulsar/pulsar-function-go/logutil"
+	log "andy.dev/pfunc/logutil"
 )
 
 func loggerFunc(ctx context.Context, input []byte) {

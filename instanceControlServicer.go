@@ -17,15 +17,15 @@
 // under the License.
 //
 
-package pf
+package pfunc
 
 import (
 	"context"
 	"fmt"
 	"net"
 
-	log "github.com/apache/pulsar/pulsar-function-go/logutil"
-	pb "github.com/apache/pulsar/pulsar-function-go/pb"
+	log "andy.dev/pfunc/logutil"
+	pb "andy.dev/pfunc/pb"
 	"github.com/golang/protobuf/ptypes/empty"
 	"google.golang.org/grpc"
 )

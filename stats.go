@@ -17,7 +17,7 @@
 // under the License.
 //
 
-package pf
+package pfunc
 
 import (
 	"fmt"
@@ -26,7 +26,7 @@ import (
 
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 
-	log "github.com/apache/pulsar/pulsar-function-go/logutil"
+	log "andy.dev/pfunc/logutil"
 	"github.com/prometheus/client_golang/prometheus"
 	prometheus_client "github.com/prometheus/client_model/go"
 )

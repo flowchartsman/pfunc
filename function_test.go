@@ -23,7 +23,7 @@
 //  - TestInvalidFunctions
 //
 
-package pf
+package pfunc
 
 import (
 	"context"

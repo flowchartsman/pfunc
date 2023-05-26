@@ -17,7 +17,7 @@
 // under the License.
 //
 
-package pf
+package pfunc
 
 import (
 	"context"
@@ -26,7 +26,7 @@ import (
 	"net"
 	"testing"
 
-	pb "github.com/apache/pulsar/pulsar-function-go/pb"
+	pb "andy.dev/pfunc/pb"
 	"github.com/golang/protobuf/ptypes/empty"
 	"github.com/stretchr/testify/assert"
 	"google.golang.org/grpc"

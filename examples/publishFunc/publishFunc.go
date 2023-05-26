@@ -25,7 +25,7 @@ import (
 	"log"
 
 	"github.com/apache/pulsar-client-go/pulsar"
-	"github.com/apache/pulsar/pulsar-function-go/pf"
+	"andy.dev/pfunc"
 )
 
 func PublishFunc(ctx context.Context, in []byte) error {

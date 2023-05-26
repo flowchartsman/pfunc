@@ -17,14 +17,14 @@
 // under the License.
 //
 
-package pf
+package pfunc
 
 import (
 	"testing"
 
-	cfg "github.com/apache/pulsar/pulsar-function-go/conf"
+	cfg "andy.dev/pfunc/conf"
 
-	pb "github.com/apache/pulsar/pulsar-function-go/pb"
+	pb "andy.dev/pfunc/pb"
 	"github.com/stretchr/testify/assert"
 )
 

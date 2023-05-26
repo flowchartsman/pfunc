@@ -23,7 +23,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/apache/pulsar/pulsar-function-go/pf"
+	"andy.dev/pfunc"
 )
 
 func contextFunc(ctx context.Context) {

@@ -27,14 +27,14 @@
 //  - Process
 //
 
-package pf
+package pfunc
 
 import (
 	"context"
 	"fmt"
 	"reflect"
 
-	log "github.com/apache/pulsar/pulsar-function-go/logutil"
+	log "andy.dev/pfunc/logutil"
 )
 
 type function interface {

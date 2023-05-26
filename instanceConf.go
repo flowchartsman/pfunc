@@ -17,15 +17,15 @@
 // under the License.
 //
 
-package pf
+package pfunc
 
 import (
 	"encoding/json"
 	"fmt"
 	"time"
 
-	"github.com/apache/pulsar/pulsar-function-go/conf"
-	pb "github.com/apache/pulsar/pulsar-function-go/pb"
+	"andy.dev/pfunc/conf"
+	pb "andy.dev/pfunc/pb"
 )
 
 // This is the config passed to the Golang Instance. Contains all the information
