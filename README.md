@@ -14,7 +14,7 @@ PFunc was created to add some features and to experiment with a more ergonomic A
 
 ## Status
 
-**PFunc is in early pre-release and is not considered production-ready**. The API is still in active development, and will likely have at several breaking changes before beta, and may invlude some before v1.0.0. If you want to experiment with it, version pinning is highly recommended pre 1.0.0.
+**PFunc is in early pre-release and is not considered production-ready**. The API is still in active development, and will likely have at several breaking changes before beta, and may include some before v1.0.0. If you want to experiment with it, version pinning is highly recommended pre 1.0.0.
 
 Please check the [milestones](https://github.com/flowchartsman/pfunc/milestones?with_issues=yes) for more info on progress to release.
 
