@@ -49,16 +49,16 @@ type Conf struct {
 	ProcessingGuarantees int32  `json:"processingGuarantees" yaml:"processingGuarantees"`
 	SecretsMap           string `json:"secretsMap" yaml:"secretsMap"`
 	Runtime              int32  `json:"runtime" yaml:"runtime"`
-	//Deprecated
+	// Deprecated
 	AutoACK     bool  `json:"autoAck" yaml:"autoAck"`
 	Parallelism int32 `json:"parallelism" yaml:"parallelism"`
-	//source config
+	// source config
 	SubscriptionType     int32  `json:"subscriptionType" yaml:"subscriptionType"`
 	TimeoutMs            uint64 `json:"timeoutMs" yaml:"timeoutMs"`
 	SubscriptionName     string `json:"subscriptionName" yaml:"subscriptionName"`
 	CleanupSubscription  bool   `json:"cleanupSubscription"  yaml:"cleanupSubscription"`
 	SubscriptionPosition int32  `json:"subscriptionPosition" yaml:"subscriptionPosition"`
-	//source input specs
+	// source input specs
 	SourceInputSpecs map[string]string `json:"sourceInputSpecs" yaml:"sourceInputSpecs"`
 	// for backward compatibility
 	// Deprecated
@@ -69,19 +69,19 @@ type Conf struct {
 	IsRegexPatternSubscription bool `json:"isRegexPatternSubscription" yaml:"isRegexPatternSubscription"`
 	// Deprecated
 	ReceiverQueueSize int32 `json:"receiverQueueSize" yaml:"receiverQueueSize"`
-	//sink spec config
+	// sink spec config
 	SinkSpecTopic  string `json:"sinkSpecsTopic" yaml:"sinkSpecsTopic"`
 	SinkSchemaType string `json:"sinkSchemaType" yaml:"sinkSchemaType"`
-	//resources config
+	// resources config
 	Cpu  float64 `json:"cpu" yaml:"cpu"`
 	Ram  int64   `json:"ram" yaml:"ram"`
 	Disk int64   `json:"disk" yaml:"disk"`
-	//retryDetails config
+	// retryDetails config
 	MaxMessageRetries           int32  `json:"maxMessageRetries" yaml:"maxMessageRetries"`
 	DeadLetterTopic             string `json:"deadLetterTopic" yaml:"deadLetterTopic"`
 	ExpectedHealthCheckInterval int32  `json:"expectedHealthCheckInterval" yaml:"expectedHealthCheckInterval"`
 	UserConfig                  string `json:"userConfig" yaml:"userConfig"`
-	//metrics config
+	// metrics config
 	MetricsPort int `json:"metricsPort" yaml:"metricsPort"`
 }
 

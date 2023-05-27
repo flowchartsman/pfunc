@@ -42,6 +42,7 @@ func getBufDialer(listener *bufconn.Listener) func(context.Context, string) (net
 		return listener.Dial()
 	}
 }
+
 func TestInstanceControlServicer_serve_creates_valid_instance(t *testing.T) {
 	lis = bufconn.Listen(bufSize)
 	// create a gRPC server object

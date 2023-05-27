@@ -30,7 +30,8 @@ import (
 )
 
 func testProcessSpawnerHealthCheckTimer(
-	tkr *time.Ticker, lastHealthCheckTS int64, expectedHealthCheckInterval int32, counter *int) {
+	tkr *time.Ticker, lastHealthCheckTS int64, expectedHealthCheckInterval int32, counter *int,
+) {
 	fmt.Println("Starting processSpawnerHealthCheckTimer")
 	now := time.Now()
 	maxIdleTime := int64(time.Duration(expectedHealthCheckInterval) * 3 * time.Second)
@@ -79,6 +80,7 @@ func TestTime_EqualsThreeSecondsFixed(t *testing.T) {
 	timeAmount := time.Millisecond * 1000 * time.Duration(expectedHealthCheckInterval)
 	assert.Equal(t, time.Second*3, timeAmount)
 }
+
 func TestTime_EqualsThreeSecondsTimed(t *testing.T) {
 	start := time.Now()
 	startTime := start.UnixNano()

@@ -42,7 +42,8 @@ func Test_newInstanceConf(t *testing.T) {
 			killAfterIdle:               50000,
 			expectedHealthCheckInterval: 3,
 			metricsPort:                 50001,
-			funcDetails: pb.FunctionDetails{Tenant: "",
+			funcDetails: pb.FunctionDetails{
+				Tenant:               "",
 				Namespace:            "",
 				Name:                 "go-function",
 				ClassName:            "",

@@ -37,7 +37,6 @@ import (
 )
 
 func TestExampleSummaryVec(t *testing.T) {
-
 	temps := prometheus.NewSummaryVec(
 		prometheus.SummaryOpts{
 			Name:       "pond_temperature_celsius",
@@ -145,14 +144,18 @@ func TestExampleSummaryVec(t *testing.T) {
 		">\n"
 	assert.Equal(t, expectedValue, proto.MarshalTextString(metricFamilies[0]))
 }
+
 func TestExampleSummaryVec_Pulsar(t *testing.T) {
 	_statProcessLatencyMs1 := prometheus.NewSummaryVec(
 		prometheus.SummaryOpts{
 			Name: "pulsar_function_process_latency_ms",
-			Help: "Process latency in milliseconds."}, metricsLabelNames)
+			Help: "Process latency in milliseconds.",
+		}, metricsLabelNames)
 
-	metricsLabels := []string{"test-tenant", "test-tenant/test-namespace", "test-name", "1234", "test-cluster",
-		"test-tenant/test-namespace/test-name"}
+	metricsLabels := []string{
+		"test-tenant", "test-tenant/test-namespace", "test-name", "1234", "test-cluster",
+		"test-tenant/test-namespace/test-name",
+	}
 	// 1234 is instanceId
 	statProcessLatencyMs := _statProcessLatencyMs1.WithLabelValues(metricsLabels...)
 

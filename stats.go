@@ -63,69 +63,82 @@ var (
 	statTotalProcessedSuccessfully = prometheus.NewGaugeVec(
 		prometheus.GaugeOpts{
 			Name: PulsarFunctionMetricsPrefix + TotalSuccessfullyProcessed,
-			Help: "Total number of messages processed successfully."},
+			Help: "Total number of messages processed successfully.",
+		},
 		metricsLabelNames)
 	statTotalSysExceptions = prometheus.NewGaugeVec(
 		prometheus.GaugeOpts{
 			Name: PulsarFunctionMetricsPrefix + TotalSystemExceptions,
-			Help: "Total number of system exceptions."},
+			Help: "Total number of system exceptions.",
+		},
 		metricsLabelNames)
 	statTotalUserExceptions = prometheus.NewGaugeVec(
 		prometheus.GaugeOpts{
 			Name: PulsarFunctionMetricsPrefix + TotalUserExceptions,
-			Help: "Total number of user exceptions."},
+			Help: "Total number of user exceptions.",
+		},
 		metricsLabelNames)
 
 	statProcessLatencyMs = prometheus.NewSummaryVec(
 		prometheus.SummaryOpts{
 			Name: PulsarFunctionMetricsPrefix + ProcessLatencyMs,
-			Help: "Process latency in milliseconds."}, metricsLabelNames)
+			Help: "Process latency in milliseconds.",
+		}, metricsLabelNames)
 
 	statLastInvocation = prometheus.NewGaugeVec(
 		prometheus.GaugeOpts{
 			Name: PulsarFunctionMetricsPrefix + LastInvocation,
-			Help: "The timestamp of the last invocation of the function."}, metricsLabelNames)
+			Help: "The timestamp of the last invocation of the function.",
+		}, metricsLabelNames)
 
 	statTotalReceived = prometheus.NewGaugeVec(
 		prometheus.GaugeOpts{
 			Name: PulsarFunctionMetricsPrefix + TotalReceived,
-			Help: "Total number of messages received from source."}, metricsLabelNames)
+			Help: "Total number of messages received from source.",
+		}, metricsLabelNames)
 
 	// 1min windowed metrics
 	statTotalProcessedSuccessfully1min = prometheus.NewGaugeVec(
 		prometheus.GaugeOpts{
 			Name: PulsarFunctionMetricsPrefix + TotalSuccessfullyProcessed1min,
-			Help: "Total number of messages processed successfully in the last 1 minute."}, metricsLabelNames)
+			Help: "Total number of messages processed successfully in the last 1 minute.",
+		}, metricsLabelNames)
 	statTotalSysExceptions1min = prometheus.NewGaugeVec(
 		prometheus.GaugeOpts{
 			Name: PulsarFunctionMetricsPrefix + TotalSystemExceptions1min,
-			Help: "Total number of system exceptions in the last 1 minute."},
+			Help: "Total number of system exceptions in the last 1 minute.",
+		},
 		metricsLabelNames)
 	statTotalUserExceptions1min = prometheus.NewGaugeVec(
 		prometheus.GaugeOpts{
 			Name: PulsarFunctionMetricsPrefix + TotalUserExceptions1min,
-			Help: "Total number of user exceptions in the last 1 minute."},
+			Help: "Total number of user exceptions in the last 1 minute.",
+		},
 		metricsLabelNames)
 
 	statProcessLatencyMs1min = prometheus.NewSummaryVec(
 		prometheus.SummaryOpts{
 			Name: PulsarFunctionMetricsPrefix + ProcessLatencyMs1min,
-			Help: "Process latency in milliseconds in the last 1 minute."}, metricsLabelNames)
+			Help: "Process latency in milliseconds in the last 1 minute.",
+		}, metricsLabelNames)
 
 	statTotalReceived1min = prometheus.NewGaugeVec(
 		prometheus.GaugeOpts{
 			Name: PulsarFunctionMetricsPrefix + TotalReceived1min,
-			Help: "Total number of messages received from source in the last 1 minute."}, metricsLabelNames)
+			Help: "Total number of messages received from source in the last 1 minute.",
+		}, metricsLabelNames)
 
 	userExceptions = prometheus.NewGaugeVec(
 		prometheus.GaugeOpts{
 			Name: PulsarFunctionMetricsPrefix + "user_exception",
-			Help: "Exception from user code."}, exceptionMetricsLabelNames)
+			Help: "Exception from user code.",
+		}, exceptionMetricsLabelNames)
 
 	systemExceptions = prometheus.NewGaugeVec(
 		prometheus.GaugeOpts{
 			Name: PulsarFunctionMetricsPrefix + "system_exception",
-			Help: "Exception from system code."}, exceptionMetricsLabelNames)
+			Help: "Exception from system code.",
+		}, exceptionMetricsLabelNames)
 
 	userMetricSummary = prometheus.NewSummaryVec(
 		prometheus.SummaryOpts{
@@ -163,7 +176,6 @@ func init() {
 	reg.MustRegister(userExceptions)
 	reg.MustRegister(systemExceptions)
 	reg.MustRegister(userMetricSummary)
-
 }
 
 type LatestException struct {
@@ -191,17 +203,17 @@ type StatWithLabelValues struct {
 
 func NewStatWithLabelValues(metricsLabels ...string) StatWithLabelValues {
 	// as optimization
-	var statTotalProcessedSuccessfully = statTotalProcessedSuccessfully.WithLabelValues(metricsLabels...)
-	var statTotalSysExceptions = statTotalSysExceptions.WithLabelValues(metricsLabels...)
-	var statTotalUserExceptions = statTotalUserExceptions.WithLabelValues(metricsLabels...)
-	var statProcessLatencyMs = statProcessLatencyMs.WithLabelValues(metricsLabels...)
-	var statLastInvocation = statLastInvocation.WithLabelValues(metricsLabels...)
-	var statTotalReceived = statTotalReceived.WithLabelValues(metricsLabels...)
-	var statTotalProcessedSuccessfully1min = statTotalProcessedSuccessfully1min.WithLabelValues(metricsLabels...)
-	var statTotalSysExceptions1min = statTotalSysExceptions1min.WithLabelValues(metricsLabels...)
-	var statTotalUserExceptions1min = statTotalUserExceptions1min.WithLabelValues(metricsLabels...)
-	//var _stat_process_latency_ms_1min = stat_process_latency_ms_1min.WithLabelValues(metrics_labels...)
-	var statTotalReceived1min = statTotalReceived1min.WithLabelValues(metricsLabels...)
+	statTotalProcessedSuccessfully := statTotalProcessedSuccessfully.WithLabelValues(metricsLabels...)
+	statTotalSysExceptions := statTotalSysExceptions.WithLabelValues(metricsLabels...)
+	statTotalUserExceptions := statTotalUserExceptions.WithLabelValues(metricsLabels...)
+	statProcessLatencyMs := statProcessLatencyMs.WithLabelValues(metricsLabels...)
+	statLastInvocation := statLastInvocation.WithLabelValues(metricsLabels...)
+	statTotalReceived := statTotalReceived.WithLabelValues(metricsLabels...)
+	statTotalProcessedSuccessfully1min := statTotalProcessedSuccessfully1min.WithLabelValues(metricsLabels...)
+	statTotalSysExceptions1min := statTotalSysExceptions1min.WithLabelValues(metricsLabels...)
+	statTotalUserExceptions1min := statTotalUserExceptions1min.WithLabelValues(metricsLabels...)
+	// var _stat_process_latency_ms_1min = stat_process_latency_ms_1min.WithLabelValues(metrics_labels...)
+	statTotalReceived1min := statTotalReceived1min.WithLabelValues(metricsLabels...)
 
 	statObj := StatWithLabelValues{
 		statTotalProcessedSuccessfully,
@@ -224,7 +236,8 @@ func NewStatWithLabelValues(metricsLabels ...string) StatWithLabelValues {
 
 func filter(
 	ss []*prometheus_client.MetricFamily,
-	test func(*prometheus_client.MetricFamily) bool) (ret []*prometheus_client.MetricFamily) {
+	test func(*prometheus_client.MetricFamily) bool,
+) (ret []*prometheus_client.MetricFamily) {
 	for _, s := range ss {
 		if test(s) {
 			ret = append(ret, s)
@@ -235,7 +248,8 @@ func filter(
 
 func getFirstMatch(
 	metrics []*prometheus_client.Metric,
-	test func(*prometheus_client.LabelPair) bool) *prometheus_client.Metric {
+	test func(*prometheus_client.LabelPair) bool,
+) *prometheus_client.Metric {
 	for _, met := range metrics {
 		for _, lbl := range met.Label {
 			if test(lbl) {
@@ -282,7 +296,7 @@ func (stat *StatWithLabelValues) addUserException(err error) {
 	stat.reportUserExceptionPrometheus(err)
 }
 
-//@limits(calls=5, period=60)
+// @limits(calls=5, period=60)
 func (stat *StatWithLabelValues) reportUserExceptionPrometheus(exception error) {
 	errorTS := []string{exception.Error()}
 	exceptionMetricLabels := append(stat.metricsLabels, errorTS...)
@@ -312,7 +326,7 @@ func (stat *StatWithLabelValues) addSysException(exception error) {
 	stat.reportSystemExceptionPrometheus(exception)
 }
 
-//@limits(calls=5, period=60)
+// @limits(calls=5, period=60)
 func (stat *StatWithLabelValues) reportSystemExceptionPrometheus(exception error) {
 	errorTS := []string{exception.Error()}
 	exceptionMetricLabels := append(stat.metricsLabels, errorTS...)

@@ -36,7 +36,6 @@ import (
 
 // nolint
 func TestInvalidFunctions(t *testing.T) {
-
 	testCases := []struct {
 		name     string
 		function interface{}
@@ -108,9 +107,7 @@ type expected struct {
 	err error
 }
 
-var (
-	input = []byte{102, 117, 110, 99, 116, 105, 111, 110}
-)
+var input = []byte{102, 117, 110, 99, 116, 105, 111, 110}
 
 func TestInvokes(t *testing.T) {
 	testCases := []struct {

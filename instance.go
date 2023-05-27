@@ -190,7 +190,6 @@ CLOSE:
 
 func (gi *goInstance) setupClient() error {
 	client, err := pulsar.NewClient(pulsar.ClientOptions{
-
 		URL: gi.context.instanceConf.pulsarServiceURL,
 	})
 	if err != nil {
@@ -334,7 +333,6 @@ func (gi *goInstance) setupConsumer() (chan pulsar.ConsumerMessage, error) {
 					Type:             subscriptionType,
 					MessageChannel:   channel,
 				})
-
 			}
 		}
 
@@ -434,9 +432,9 @@ func getIdleTimeout(timeoutMilliSecond time.Duration) time.Duration {
 func (gi *goInstance) setupLogHandler() error {
 	if gi.context.instanceConf.funcDetails.GetLogTopic() != "" {
 		gi.context.logAppender = NewLogAppender(
-			gi.client, //pulsar client
-			gi.context.instanceConf.funcDetails.GetLogTopic(), //log topic
-			getDefaultSubscriptionName(gi.context.instanceConf.funcDetails.Tenant, //fqn
+			gi.client, // pulsar client
+			gi.context.instanceConf.funcDetails.GetLogTopic(), // log topic
+			getDefaultSubscriptionName(gi.context.instanceConf.funcDetails.Tenant, // fqn
 				gi.context.instanceConf.funcDetails.Namespace,
 				gi.context.instanceConf.funcDetails.Name),
 		)
@@ -538,7 +536,7 @@ func (gi *goInstance) getMetrics() *pb.MetricsData {
 	totalProcessedSuccessfully1min := gi.getTotalProcessedSuccessfully1min()
 	totalUserExceptions1min := gi.getTotalUserExceptions1min()
 	totalSysExceptions1min := gi.getTotalSysExceptions1min()
-	//avg_process_latency_ms_1min := gi.get_avg_process_latency_1min()
+	// avg_process_latency_ms_1min := gi.get_avg_process_latency_1min()
 	userMetricsMap := gi.getUserMetricsMap()
 
 	metricsData := pb.MetricsData{}

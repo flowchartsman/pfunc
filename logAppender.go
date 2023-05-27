@@ -23,8 +23,8 @@ import (
 	"context"
 	"time"
 
-	"github.com/apache/pulsar-client-go/pulsar"
 	log "andy.dev/pfunc/logutil"
+	"github.com/apache/pulsar-client-go/pulsar"
 )
 
 type LogAppender struct {
