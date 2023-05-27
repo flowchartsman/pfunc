@@ -1,4 +1,4 @@
-![logo](github/pfunc.svg)
+![logo](.github/pfunc.svg)
 
 [![last commit](https://img.shields.io/github/last-commit/flowchartsman/pfunc?style=plastic)](https://github.com/flowchartsman/pfunc/commits/master)
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/flowchartsman/pfunc?label=Latest%20Release&style=plastic)
