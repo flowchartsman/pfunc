@@ -127,8 +127,7 @@ func newInstanceConfWithConf(cfg *conf.Conf) *instanceConf {
 }
 
 func newInstanceConf() *instanceConf {
-	config := &conf.Conf{}
-	cfg := config.GetConf()
+	cfg := conf.GetConf()
 	if cfg == nil {
 		panic("config file is nil.")
 	}

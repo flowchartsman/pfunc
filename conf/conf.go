@@ -21,7 +21,9 @@ package conf
 
 import (
 	"encoding/json"
+	"errors"
 	"flag"
+	"io/fs"
 	"io/ioutil"
 	"os"
 	"time"
@@ -29,8 +31,6 @@ import (
 	log "andy.dev/pfunc/logutil"
 	"gopkg.in/yaml.v2"
 )
-
-const ConfigPath = "conf/conf.yaml"
 
 type Conf struct {
 	PulsarServiceURL string        `json:"pulsarServiceURL" yaml:"pulsarServiceURL"`
@@ -91,54 +91,94 @@ var (
 	confContent  string
 )
 
-func (c *Conf) GetConf() *Conf {
+func initConfig() {
+	if flag.Parsed() {
+		return
+	}
+	flag.BoolVar(&help, "help", false, "print help cmd")
+	flag.StringVar(&confFilePath, "instance-conf-path", "", "config conf.yml filepath")
+	flag.StringVar(&confContent, "instance-conf", "", "the string content of Conf struct")
 	flag.Parse()
 
 	if help {
 		flag.Usage()
 	}
+}
 
-	if confContent == "" && confFilePath == "" {
-		log.Errorf("no yaml file or conf content provided")
+func GetConf() *Conf {
+	initConfig()
+	// prefer, in order:
+	// - manual configuration file
+	// - manual configuration as flag
+	// - automatic configuration file
+
+	if confFilePath == "" {
+		confFilePath = getDefaultConfigPath()
+	}
+
+	// no config provided, can't proceed
+	if confFilePath == "" && confContent == "" {
+		log.Errorf("neither --instance-conf-path nor --instance-conf provided, cannot continue")
 		return nil
 	}
 
-	if confFilePath != "" {
-		yamlFile, err := ioutil.ReadFile(confFilePath)
-		if err == nil {
-			err = yaml.Unmarshal(yamlFile, c)
-			if err != nil {
-				log.Errorf("unmarshal yaml file error:%s", err.Error())
-				return nil
-			}
-		} else if os.IsNotExist(err) && confContent == "" {
-			log.Errorf("conf file not found, no config content provided, err:%s", err.Error())
-			return nil
-		} else if !os.IsNotExist(err) {
-			log.Errorf("load conf file failed, err:%s", err.Error())
-			return nil
-		}
+	if flagProvided("instance-conf-path") && confFilePath != "" && confContent != "" {
+		// both types of configs explicitly provided, this is something we should at least warn on
+		log.Warnf("both --instance-conf-path and --instance-conf provided, defaulting to --instance-conf-path: %s", confFilePath)
+		// wipe the flag content so that we load the file instead
+		confContent = ""
 	}
 
+	c := &Conf{}
+
+	// if set, use the command line flag value
 	if confContent != "" {
 		err := json.Unmarshal([]byte(confContent), c)
 		if err != nil {
 			log.Errorf("unmarshal config content error:%s", err.Error())
 			return nil
 		}
+		return c
 	}
 
+	// otherwise load from the file
+	yamlFile, err := ioutil.ReadFile(confFilePath)
+	if err != nil {
+		if errors.Is(err, fs.ErrNotExist) {
+			log.Errorf("supplied config file does not exist")
+			return nil
+		}
+	}
+	err = yaml.Unmarshal(yamlFile, c)
+	if err != nil {
+		log.Errorf("unmarshal yaml file error:%s", err.Error())
+		return nil
+	}
 	return c
 }
 
-func init() {
-	var defaultPath string
-	if err := os.Chdir("../"); err == nil {
-		defaultPath = ConfigPath
-	}
-	log.Infof("The default config file path is: %s", defaultPath)
+func getDefaultConfigPath() string {
+	// TODO: is conf/conf.yaml necessary outside of testing?
 
-	flag.BoolVar(&help, "help", false, "print help cmd")
-	flag.StringVar(&confFilePath, "instance-conf-path", defaultPath, "config conf.yml filepath")
-	flag.StringVar(&confContent, "instance-conf", "", "the string content of Conf struct")
+	for _, configPath := range []string{
+		"conf/conf.yaml",
+		"conf.yaml",
+	} {
+		s, err := os.Stat(configPath)
+		if err != nil || s.IsDir() {
+			continue
+		}
+		return configPath
+	}
+	return ""
+}
+
+func flagProvided(name string) bool {
+	found := false
+	flag.Visit(func(f *flag.Flag) {
+		if f.Name == name {
+			found = true
+		}
+	})
+	return found
 }
