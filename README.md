@@ -4,13 +4,19 @@
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/flowchartsman/pfunc?label=Latest%20Release&style=plastic)
 ![downloads](https://img.shields.io/github/downloads/flowchartsman/pfunc/total?style=plastic)
 
+**PRE-RELEASE**
+
 PFunc is a [Pulsar Function](https://pulsar.apache.org/docs/next/functions-overview/) SDK for Go.
 
 [Pulsar](https://pulsar.apache.org/) is a distributed pub-sub messaging platform with a very flexible messaging model and an intuitive client API.
 
-PFunc is brand new and in active development. It was created to add some features and to experiment with a more ergonomic API, while also serving as a Proof-of-concept for the official SDK. The goal is not to compete with the official SDK, but to help improve it and potentially eventually serve as a replacement.
+PFunc was created to add some features and to experiment with a more ergonomic API, while also serving as a proof-of-concept for the official SDK. The goal is not to compete with the official SDK, but to help improve it and potentially eventually serve as a replacement.
 
-Version pinning is highly recommended pending v1.0.0.
+## Status
+
+**PFunc is in early pre-release and is not considered production-ready**. The API is still in active development, and will likely have at several breaking changes before beta, and may invlude some before v1.0.0. If you want to experiment with it, version pinning is highly recommended pre 1.0.0.
+
+Please check the [milestones](https://github.com/flowchartsman/pfunc/milestones?with_issues=yes) for more info on progress to release.
 
 ## Planned Features
 
