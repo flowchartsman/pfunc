@@ -158,8 +158,6 @@ func GetConf() *Conf {
 }
 
 func getDefaultConfigPath() string {
-	// TODO: is conf/conf.yaml necessary outside of testing?
-
 	for _, configPath := range []string{
 		"conf/conf.yaml",
 		"conf.yaml",
