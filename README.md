@@ -26,6 +26,7 @@ Version pinning is highly recommended pending v1.0.0.
   - [ ] [Secrets](https://pulsar.apache.org/docs/next/functions-develop-security/)
   - [ ] [Admin API](https://pulsar.apache.org/docs/next/functions-develop-admin-api/)
 - [ ] New Features
+  - [ ] Support for go 1.19 [soft memory limit](https://github.com/golang/go/issues/48409)
   - [ ] Expanded Standard Metrics (messages output, output percentage)
   - [ ] Extended User Metrics (more than just an overloaded histogram)
   - [ ] Continuous Profiling Reporting (w/ optional reporting on a topic)
