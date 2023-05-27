@@ -17,6 +17,7 @@ Version pinning is highly recommended pending v1.0.0.
 - [ ] Streamlined Messaging API
   - [ ] Return one or more messages for multiple topics
   - [ ] Support for message properties
+  - [ ] Support for message key (with automatic defaults)
 - [ ] Improved access to context, and user config
 - [ ] Support for [`slog`](https://pkg.go.dev/golang.org/x/exp/slog) as a logging interface
 - [ ] Better crash reporting (initialize logging as soon as possible and report panics when possible)
