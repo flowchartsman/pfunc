@@ -25,7 +25,7 @@ import (
 	"time"
 
 	"andy.dev/pfunc/conf"
-	pb "andy.dev/pfunc/pb"
+	"andy.dev/pfunc/internal/fnapi"
 )
 
 // This is the config passed to the Golang Instance. Contains all the information
@@ -34,7 +34,7 @@ type instanceConf struct {
 	instanceID                  int
 	funcID                      string
 	funcVersion                 string
-	funcDetails                 pb.FunctionDetails
+	funcDetails                 fnapi.FunctionDetails
 	maxBufTuples                int
 	port                        int
 	clusterName                 string
@@ -45,19 +45,19 @@ type instanceConf struct {
 }
 
 func newInstanceConfWithConf(cfg *conf.Conf) *instanceConf {
-	inputSpecs := make(map[string]*pb.ConsumerSpec)
+	inputSpecs := make(map[string]*fnapi.ConsumerSpec)
 	// for backward compatibility
 	if cfg.SourceSpecTopic != "" {
-		inputSpecs[cfg.SourceSpecTopic] = &pb.ConsumerSpec{
+		inputSpecs[cfg.SourceSpecTopic] = &fnapi.ConsumerSpec{
 			SchemaType:     cfg.SourceSchemaType,
 			IsRegexPattern: cfg.IsRegexPatternSubscription,
-			ReceiverQueueSize: &pb.ConsumerSpec_ReceiverQueueSize{
+			ReceiverQueueSize: &fnapi.ConsumerSpec_ReceiverQueueSize{
 				Value: cfg.ReceiverQueueSize,
 			},
 		}
 	}
 	for topic, value := range cfg.SourceInputSpecs {
-		spec := &pb.ConsumerSpec{}
+		spec := &fnapi.ConsumerSpec{}
 		if err := json.Unmarshal([]byte(value), spec); err != nil {
 			panic(fmt.Sprintf("Failed to unmarshal consume specs: %v", err))
 		}
@@ -74,34 +74,34 @@ func newInstanceConfWithConf(cfg *conf.Conf) *instanceConf {
 		killAfterIdle:               cfg.KillAfterIdleMs,
 		expectedHealthCheckInterval: cfg.ExpectedHealthCheckInterval,
 		metricsPort:                 cfg.MetricsPort,
-		funcDetails: pb.FunctionDetails{
+		funcDetails: fnapi.FunctionDetails{
 			Tenant:               cfg.Tenant,
 			Namespace:            cfg.NameSpace,
 			Name:                 cfg.Name,
 			LogTopic:             cfg.LogTopic,
-			ProcessingGuarantees: pb.ProcessingGuarantees(cfg.ProcessingGuarantees),
+			ProcessingGuarantees: fnapi.ProcessingGuarantees(cfg.ProcessingGuarantees),
 			SecretsMap:           cfg.SecretsMap,
-			Runtime:              pb.FunctionDetails_Runtime(cfg.Runtime),
+			Runtime:              fnapi.FunctionDetails_Runtime(cfg.Runtime),
 			AutoAck:              cfg.AutoACK,
 			Parallelism:          cfg.Parallelism,
-			Source: &pb.SourceSpec{
-				SubscriptionType:     pb.SubscriptionType(cfg.SubscriptionType),
+			Source: &fnapi.SourceSpec{
+				SubscriptionType:     fnapi.SubscriptionType(cfg.SubscriptionType),
 				InputSpecs:           inputSpecs,
 				TimeoutMs:            cfg.TimeoutMs,
 				SubscriptionName:     cfg.SubscriptionName,
 				CleanupSubscription:  cfg.CleanupSubscription,
-				SubscriptionPosition: pb.SubscriptionPosition(cfg.SubscriptionPosition),
+				SubscriptionPosition: fnapi.SubscriptionPosition(cfg.SubscriptionPosition),
 			},
-			Sink: &pb.SinkSpec{
+			Sink: &fnapi.SinkSpec{
 				Topic:      cfg.SinkSpecTopic,
 				SchemaType: cfg.SinkSchemaType,
 			},
-			Resources: &pb.Resources{
+			Resources: &fnapi.Resources{
 				Cpu:  cfg.Cpu,
 				Ram:  cfg.Ram,
 				Disk: cfg.Disk,
 			},
-			RetryDetails: &pb.RetryDetails{
+			RetryDetails: &fnapi.RetryDetails{
 				MaxMessageRetries: cfg.MaxMessageRetries,
 				DeadLetterTopic:   cfg.DeadLetterTopic,
 			},
@@ -109,13 +109,13 @@ func newInstanceConfWithConf(cfg *conf.Conf) *instanceConf {
 		},
 	}
 
-	if instanceConf.funcDetails.ProcessingGuarantees == pb.ProcessingGuarantees_EFFECTIVELY_ONCE {
+	if instanceConf.funcDetails.ProcessingGuarantees == fnapi.ProcessingGuarantees_EFFECTIVELY_ONCE {
 		panic("Go instance current not support EFFECTIVELY_ONCE processing guarantees.")
 	}
 
 	if !instanceConf.funcDetails.AutoAck &&
-		(instanceConf.funcDetails.ProcessingGuarantees == pb.ProcessingGuarantees_ATMOST_ONCE ||
-			instanceConf.funcDetails.ProcessingGuarantees == pb.ProcessingGuarantees_ATLEAST_ONCE) {
+		(instanceConf.funcDetails.ProcessingGuarantees == fnapi.ProcessingGuarantees_ATMOST_ONCE ||
+			instanceConf.funcDetails.ProcessingGuarantees == fnapi.ProcessingGuarantees_ATLEAST_ONCE) {
 		panic("When Guarantees == " + instanceConf.funcDetails.ProcessingGuarantees.String() +
 			", autoAck must be equal to true. If you want not to automatically ack, " +
 			"please configure the processing guarantees as MANUAL." +

@@ -23,7 +23,7 @@
 // 	protoc        v3.17.3
 // source: InstanceCommunication.proto
 
-package api
+package fnapi
 
 import (
 	context "context"

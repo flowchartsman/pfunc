@@ -23,7 +23,7 @@
 // 	protoc        v3.19.4
 // source: Function.proto
 
-package api
+package fnapi
 
 import (
 	proto "github.com/golang/protobuf/proto"

@@ -26,7 +26,7 @@ import (
 	"net"
 	"testing"
 
-	pb "andy.dev/pfunc/pb"
+	"andy.dev/pfunc/internal/fnapi"
 	"github.com/golang/protobuf/ptypes/empty"
 	"github.com/stretchr/testify/assert"
 	"google.golang.org/grpc"
@@ -50,7 +50,7 @@ func TestInstanceControlServicer_serve_creates_valid_instance(t *testing.T) {
 	instance := newGoInstance()
 	servicer := InstanceControlServicer{instance}
 	// must register before we start the service.
-	pb.RegisterInstanceControlServer(grpcServer, &servicer)
+	fnapi.RegisterInstanceControlServer(grpcServer, &servicer)
 	// start the server
 	log.Printf("Serving InstanceCommunication on port %d", instance.context.GetPort())
 
@@ -68,7 +68,7 @@ func TestInstanceControlServicer_serve_creates_valid_instance(t *testing.T) {
 		t.Fatalf("Failed to dial bufnet: %v", err)
 	}
 	defer conn.Close()
-	client := pb.NewInstanceControlClient(conn)
+	client := fnapi.NewInstanceControlClient(conn)
 	resp, err := client.HealthCheck(ctx, &empty.Empty{})
 	if err != nil {
 		t.Fatalf("SayHello failed: %v", err)
@@ -79,7 +79,7 @@ func TestInstanceControlServicer_serve_creates_valid_instance(t *testing.T) {
 	assert.Equal(t, resp.Success, true)
 }
 
-func instanceCommunicationClient(t *testing.T, instance *goInstance) pb.InstanceControlClient {
+func instanceCommunicationClient(t *testing.T, instance *goInstance) fnapi.InstanceControlClient {
 	t.Helper()
 
 	if instance == nil {
@@ -108,7 +108,7 @@ func instanceCommunicationClient(t *testing.T, instance *goInstance) pb.Instance
 
 	servicer := InstanceControlServicer{instance}
 	// must register before we start the service.
-	pb.RegisterInstanceControlServer(grpcServer, &servicer)
+	fnapi.RegisterInstanceControlServer(grpcServer, &servicer)
 
 	// start the server
 	t.Logf("Serving InstanceCommunication on port %d", instance.context.GetPort())
@@ -127,6 +127,6 @@ func instanceCommunicationClient(t *testing.T, instance *goInstance) pb.Instance
 	t.Cleanup(func() {
 		conn.Close()
 	})
-	client := pb.NewInstanceControlClient(conn)
+	client := fnapi.NewInstanceControlClient(conn)
 	return client
 }

@@ -24,8 +24,8 @@ import (
 	"fmt"
 	"net"
 
+	"andy.dev/pfunc/internal/fnapi"
 	log "andy.dev/pfunc/logutil"
-	pb "andy.dev/pfunc/pb"
 	"github.com/golang/protobuf/ptypes/empty"
 	"google.golang.org/grpc"
 )
@@ -36,14 +36,14 @@ type InstanceControlServicer struct {
 
 func (icServicer *InstanceControlServicer) GetFunctionStatus(
 	ctx context.Context, req *empty.Empty,
-) (*pb.FunctionStatus, error) {
+) (*fnapi.FunctionStatus, error) {
 	return icServicer.goInstance.getFunctionStatus(), nil
 	// return nil, status.Errorf(codes.Unimplemented, "method GetFunctionStatus not implemented")
 }
 
 func (icServicer *InstanceControlServicer) GetAndResetMetrics(
 	ctx context.Context, req *empty.Empty,
-) (*pb.MetricsData, error) {
+) (*fnapi.MetricsData, error) {
 	return icServicer.goInstance.getAndResetMetrics(), nil
 }
 
@@ -55,13 +55,13 @@ func (icServicer *InstanceControlServicer) ResetMetrics(
 
 func (icServicer *InstanceControlServicer) GetMetrics(
 	ctx context.Context, req *empty.Empty,
-) (*pb.MetricsData, error) {
+) (*fnapi.MetricsData, error) {
 	return icServicer.goInstance.getMetrics(), nil
 }
 
 func (icServicer *InstanceControlServicer) HealthCheck(
 	ctx context.Context, req *empty.Empty,
-) (*pb.HealthCheckResult, error) {
+) (*fnapi.HealthCheckResult, error) {
 	return icServicer.goInstance.healthCheck(), nil
 }
 
@@ -74,7 +74,7 @@ func (icServicer *InstanceControlServicer) serve(goInstance *goInstance) *grpc.S
 	// create a gRPC server object
 	grpcServer := grpc.NewServer()
 	// must register before we start the service.
-	pb.RegisterInstanceControlServer(grpcServer, icServicer)
+	fnapi.RegisterInstanceControlServer(grpcServer, icServicer)
 	// start the server
 	log.Infof("Serving InstanceCommunication on port %d", goInstance.context.GetPort())
 	go func() {

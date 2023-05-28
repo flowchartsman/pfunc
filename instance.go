@@ -29,8 +29,8 @@ import (
 
 	"github.com/apache/pulsar-client-go/pulsar"
 
+	"andy.dev/pfunc/internal/fnapi"
 	log "andy.dev/pfunc/logutil"
-	pb "andy.dev/pfunc/pb"
 	prometheus_client "github.com/prometheus/client_model/go"
 )
 
@@ -153,8 +153,8 @@ CLOSE:
 		select {
 		case cm := <-channel:
 			msgInput := cm.Message
-			atMostOnce := gi.context.instanceConf.funcDetails.ProcessingGuarantees == pb.ProcessingGuarantees_ATMOST_ONCE
-			atLeastOnce := gi.context.instanceConf.funcDetails.ProcessingGuarantees == pb.ProcessingGuarantees_ATLEAST_ONCE
+			atMostOnce := gi.context.instanceConf.funcDetails.ProcessingGuarantees == fnapi.ProcessingGuarantees_ATMOST_ONCE
+			atLeastOnce := gi.context.instanceConf.funcDetails.ProcessingGuarantees == fnapi.ProcessingGuarantees_ATLEAST_ONCE
 			autoAck := gi.context.instanceConf.funcDetails.AutoAck
 			if autoAck && atMostOnce {
 				gi.ackInputMessage(msgInput)
@@ -227,11 +227,11 @@ func (gi *goInstance) getProducer(topicName string) (pulsar.Producer, error) {
 	compressionType := pulsar.LZ4
 	if gi.context.instanceConf.funcDetails.Sink.ProducerSpec != nil {
 		switch gi.context.instanceConf.funcDetails.Sink.ProducerSpec.CompressionType {
-		case pb.CompressionType_NONE:
+		case fnapi.CompressionType_NONE:
 			compressionType = pulsar.NoCompression
-		case pb.CompressionType_ZLIB:
+		case fnapi.CompressionType_ZLIB:
 			compressionType = pulsar.ZLib
-		case pb.CompressionType_ZSTD:
+		case fnapi.CompressionType_ZSTD:
 			compressionType = pulsar.ZSTD
 		default:
 			compressionType = pulsar.LZ4 // go doesn't support SNAPPY yet
@@ -266,7 +266,7 @@ func (gi *goInstance) getProducer(topicName string) (pulsar.Producer, error) {
 
 func (gi *goInstance) setupConsumer() (chan pulsar.ConsumerMessage, error) {
 	subscriptionType := pulsar.Shared
-	if int32(gi.context.instanceConf.funcDetails.Source.SubscriptionType) == pb.SubscriptionType_value["FAILOVER"] {
+	if int32(gi.context.instanceConf.funcDetails.Source.SubscriptionType) == fnapi.SubscriptionType_value["FAILOVER"] {
 		subscriptionType = pulsar.Failover
 	}
 
@@ -358,7 +358,7 @@ func (gi *goInstance) handlerMsg(input pulsar.Message) (output []byte, err error
 }
 
 func (gi *goInstance) processResult(msgInput pulsar.Message, output []byte) {
-	atLeastOnce := gi.context.instanceConf.funcDetails.ProcessingGuarantees == pb.ProcessingGuarantees_ATLEAST_ONCE
+	atLeastOnce := gi.context.instanceConf.funcDetails.ProcessingGuarantees == fnapi.ProcessingGuarantees_ATLEAST_ONCE
 	autoAck := gi.context.instanceConf.funcDetails.AutoAck
 
 	// If the function had an output and the user has specified an output topic, the output needs to be sent to the
@@ -482,15 +482,15 @@ func (gi *goInstance) close() {
 	}
 }
 
-func (gi *goInstance) healthCheck() *pb.HealthCheckResult {
+func (gi *goInstance) healthCheck() *fnapi.HealthCheckResult {
 	now := time.Now()
 	gi.lastHealthCheckTS = now.UnixNano()
-	healthCheckResult := pb.HealthCheckResult{Success: true}
+	healthCheckResult := fnapi.HealthCheckResult{Success: true}
 	return &healthCheckResult
 }
 
-func (gi *goInstance) getFunctionStatus() *pb.FunctionStatus {
-	status := pb.FunctionStatus{}
+func (gi *goInstance) getFunctionStatus() *fnapi.FunctionStatus {
+	status := fnapi.FunctionStatus{}
 	status.Running = true
 	totalReceived := gi.getTotalReceived()
 	totalProcessedSuccessfully := gi.getTotalProcessedSuccessfully()
@@ -506,7 +506,7 @@ func (gi *goInstance) getFunctionStatus() *pb.FunctionStatus {
 
 	status.NumUserExceptions = int64(totalUserExceptions)
 	for _, exPair := range gi.stats.latestUserException {
-		toAdd := pb.FunctionStatus_ExceptionInformation{}
+		toAdd := fnapi.FunctionStatus_ExceptionInformation{}
 		toAdd.ExceptionString = exPair.exception.Error()
 		toAdd.MsSinceEpoch = exPair.timestamp
 		status.LatestUserExceptions = append(status.LatestUserExceptions, &toAdd)
@@ -514,7 +514,7 @@ func (gi *goInstance) getFunctionStatus() *pb.FunctionStatus {
 
 	status.NumSystemExceptions = int64(totalSysExceptions)
 	for _, exPair := range gi.stats.latestSysException {
-		toAdd := pb.FunctionStatus_ExceptionInformation{}
+		toAdd := fnapi.FunctionStatus_ExceptionInformation{}
 		toAdd.ExceptionString = exPair.exception.Error()
 		toAdd.MsSinceEpoch = exPair.timestamp
 		status.LatestSystemExceptions = append(status.LatestSystemExceptions, &toAdd)
@@ -524,7 +524,7 @@ func (gi *goInstance) getFunctionStatus() *pb.FunctionStatus {
 	return &status
 }
 
-func (gi *goInstance) getMetrics() *pb.MetricsData {
+func (gi *goInstance) getMetrics() *fnapi.MetricsData {
 	totalReceived := gi.getTotalReceived()
 	totalProcessedSuccessfully := gi.getTotalProcessedSuccessfully()
 	totalUserExceptions := gi.getTotalUserExceptions()
@@ -539,7 +539,7 @@ func (gi *goInstance) getMetrics() *pb.MetricsData {
 	// avg_process_latency_ms_1min := gi.get_avg_process_latency_1min()
 	userMetricsMap := gi.getUserMetricsMap()
 
-	metricsData := pb.MetricsData{}
+	metricsData := fnapi.MetricsData{}
 	// total metrics
 	metricsData.ReceivedTotal = int64(totalReceived)
 	metricsData.ProcessedSuccessfullyTotal = int64(totalProcessedSuccessfully)
@@ -559,7 +559,7 @@ func (gi *goInstance) getMetrics() *pb.MetricsData {
 	return &metricsData
 }
 
-func (gi *goInstance) getAndResetMetrics() *pb.MetricsData {
+func (gi *goInstance) getAndResetMetrics() *fnapi.MetricsData {
 	metricsData := gi.getMetrics()
 	gi.resetMetrics()
 	return metricsData

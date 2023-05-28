@@ -23,7 +23,7 @@
 // 	protoc        v3.17.3
 // source: Request.proto
 
-package api
+package fnapi
 
 import (
 	proto "github.com/golang/protobuf/proto"
