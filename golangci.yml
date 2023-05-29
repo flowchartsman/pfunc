@@ -23,21 +23,18 @@ run:
 linters:
   disable-all: true
   enable:
+    - revive
     - bodyclose
-    - deadcode
     - goimports
-    - golint
     - gosimple
     - ineffassign
-    - interfacer
     - misspell
     - staticcheck
-    - structcheck
     - stylecheck
     - typecheck
     - unconvert
     - unparam
     - unused
-    - varcheck
     - lll
     - prealloc
+    # - structcheck
