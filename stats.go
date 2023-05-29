@@ -234,16 +234,16 @@ func NewStatWithLabelValues(metricsLabels ...string) StatWithLabelValues {
 	return statObj
 }
 
-func filter(
-	ss []*prometheus_client.MetricFamily,
-	test func(*prometheus_client.MetricFamily) bool,
-) (ret []*prometheus_client.MetricFamily) {
+type metricFilter func(*prometheus_client.MetricFamily) bool
+
+func filterMetrics(ss []*prometheus_client.MetricFamily, test metricFilter) []*prometheus_client.MetricFamily {
+	var filtered []*prometheus_client.MetricFamily
 	for _, s := range ss {
 		if test(s) {
-			ret = append(ret, s)
+			filtered = append(filtered, s)
 		}
 	}
-	return
+	return filtered
 }
 
 func getFirstMatch(

@@ -67,7 +67,7 @@ func TestExampleSummaryVec(t *testing.T) {
 	match := func(vect *prometheus_client.MetricFamily) bool {
 		return *vect.Name == "pond_temperature_celsius"
 	}
-	filteredMetricFamilies := filter(metricFamilies, match)
+	filteredMetricFamilies := filterMetrics(metricFamilies, match)
 
 	if len(filteredMetricFamilies) > 1 {
 		t.Fatal("Too many metric families")
@@ -178,7 +178,7 @@ func TestExampleSummaryVec_Pulsar(t *testing.T) {
 	matchFamilyFunc := func(vect *prometheus_client.MetricFamily) bool {
 		return *vect.Name == "pulsar_function_process_latency_ms"
 	}
-	fiteredMetricFamilies := filter(metricFamilies, matchFamilyFunc)
+	fiteredMetricFamilies := filterMetrics(metricFamilies, matchFamilyFunc)
 	if len(fiteredMetricFamilies) > 1 {
 		t.Fatal("Too many metric families")
 	}
