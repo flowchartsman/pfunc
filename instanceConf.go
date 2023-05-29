@@ -22,7 +22,6 @@ package pfunc
 import (
 	"encoding/json"
 	"fmt"
-	"time"
 
 	"andy.dev/pfunc/conf"
 	"andy.dev/pfunc/internal/fnapi"
@@ -39,7 +38,7 @@ type instanceConf struct {
 	port                        int
 	clusterName                 string
 	pulsarServiceURL            string
-	killAfterIdle               time.Duration
+	killAfterIdleMs             int
 	expectedHealthCheckInterval int32
 	metricsPort                 int
 }
@@ -71,7 +70,7 @@ func newInstanceConfWithConf(cfg *conf.Conf) *instanceConf {
 		port:                        cfg.Port,
 		clusterName:                 cfg.ClusterName,
 		pulsarServiceURL:            cfg.PulsarServiceURL,
-		killAfterIdle:               cfg.KillAfterIdleMs,
+		killAfterIdleMs:             cfg.KillAfterIdleMs,
 		expectedHealthCheckInterval: cfg.ExpectedHealthCheckInterval,
 		metricsPort:                 cfg.MetricsPort,
 		funcDetails: fnapi.FunctionDetails{

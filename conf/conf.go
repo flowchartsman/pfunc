@@ -26,21 +26,20 @@ import (
 	"io/fs"
 	"io/ioutil"
 	"os"
-	"time"
 
 	log "andy.dev/pfunc/logutil"
 	"gopkg.in/yaml.v2"
 )
 
 type Conf struct {
-	PulsarServiceURL string        `json:"pulsarServiceURL" yaml:"pulsarServiceURL"`
-	InstanceID       int           `json:"instanceID" yaml:"instanceID"`
-	FuncID           string        `json:"funcID" yaml:"funcID"`
-	FuncVersion      string        `json:"funcVersion" yaml:"funcVersion"`
-	MaxBufTuples     int           `json:"maxBufTuples" yaml:"maxBufTuples"`
-	Port             int           `json:"port" yaml:"port"`
-	ClusterName      string        `json:"clusterName" yaml:"clusterName"`
-	KillAfterIdleMs  time.Duration `json:"killAfterIdleMs" yaml:"killAfterIdleMs"`
+	PulsarServiceURL string `json:"pulsarServiceURL" yaml:"pulsarServiceURL"`
+	InstanceID       int    `json:"instanceID" yaml:"instanceID"`
+	FuncID           string `json:"funcID" yaml:"funcID"`
+	FuncVersion      string `json:"funcVersion" yaml:"funcVersion"`
+	MaxBufTuples     int    `json:"maxBufTuples" yaml:"maxBufTuples"`
+	Port             int    `json:"port" yaml:"port"`
+	ClusterName      string `json:"clusterName" yaml:"clusterName"`
+	KillAfterIdleMs  int    `json:"killAfterIdleMs" yaml:"killAfterIdleMs"`
 	// function details config
 	Tenant               string `json:"tenant" yaml:"tenant"`
 	NameSpace            string `json:"nameSpace" yaml:"nameSpace"`

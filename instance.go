@@ -137,7 +137,7 @@ func (gi *goInstance) startFunction(function function) error {
 		return err
 	}
 
-	idleDuration := getIdleTimeout(time.Millisecond * gi.context.instanceConf.killAfterIdle)
+	idleDuration := getIdleTimeout(time.Millisecond * time.Duration(gi.context.instanceConf.killAfterIdleMs))
 	idleTimer := time.NewTimer(idleDuration)
 	defer idleTimer.Stop()
 

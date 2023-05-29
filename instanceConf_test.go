@@ -39,7 +39,7 @@ func Test_newInstanceConf(t *testing.T) {
 			port:                        8091,
 			clusterName:                 "pulsar-function-go",
 			pulsarServiceURL:            "pulsar://localhost:6650",
-			killAfterIdle:               50000,
+			killAfterIdleMs:             50000,
 			expectedHealthCheckInterval: 3,
 			metricsPort:                 50001,
 			funcDetails: fnapi.FunctionDetails{
