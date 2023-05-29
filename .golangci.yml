@@ -43,11 +43,15 @@ linters-settings:
         disabled: true
       - name: cyclomatic
         disabled: true
+      - name: deep-exit
+        disabled: true # normally want this, but this project is frameworky/special
       - name: empty-lines
         disabled: true
       - name: exported
         disabled: true
       - name: file-header
+        disabled: true
+      - name: flag-parameter # sometimes smelly, but okay in moderation
         disabled: true
       - name: function-length
         disabled: true
@@ -94,8 +98,6 @@ linters-settings:
         severity: warning
       - name: errorf
         severity: warning
-      - name: flag-parameter
-        severity: warning
       - name: function-result-limit
         severity: warning
         arguments: [3]
@@ -138,8 +140,6 @@ linters-settings:
         severity: error
         arguments:
           - allowTypesBefore: "*testing.T"
-      - name: deep-exit
-        severity: error
       - name: dot-imports
         severity: error
       - name: early-return
