@@ -170,8 +170,7 @@ func Start(funcName any) {
 	goInstance := newGoInstance()
 	err := goInstance.startFunction(function)
 	if err != nil {
-		log.Fatal(err)
-		panic("start function failed, please check.")
+		log.Fatal(fmt.Errorf("startFunction failed: %v", err))
 	}
 }
 
