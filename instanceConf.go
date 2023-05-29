@@ -96,8 +96,8 @@ func newInstanceConfWithConf(cfg *conf.Conf) *instanceConf {
 				SchemaType: cfg.SinkSchemaType,
 			},
 			Resources: &fnapi.Resources{
-				Cpu:  cfg.Cpu,
-				Ram:  cfg.Ram,
+				Cpu:  cfg.CPU,
+				Ram:  cfg.RAM,
 				Disk: cfg.Disk,
 			},
 			RetryDetails: &fnapi.RetryDetails{
