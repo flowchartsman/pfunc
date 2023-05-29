@@ -270,7 +270,7 @@ func (gi *goInstance) setupConsumer() (chan pulsar.ConsumerMessage, error) {
 		subscriptionType = pulsar.Failover
 	}
 
-	funcDetails := gi.context.instanceConf.funcDetails
+	funcDetails := &gi.context.instanceConf.funcDetails
 	subscriptionName := funcDetails.Tenant + "/" + funcDetails.Namespace + "/" + funcDetails.Name
 	if funcDetails.Source != nil && funcDetails.Source.SubscriptionName != "" {
 		subscriptionName = funcDetails.Source.SubscriptionName
