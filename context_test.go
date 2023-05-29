@@ -57,7 +57,7 @@ func TestContext(t *testing.T) {
 		assert.Equal(t, "hapax legomenon", resfc.GetUserConfValue("word-of-the-day"))
 		assert.Equal(
 			t,
-			map[string]interface{}{"word-of-the-day": "hapax legomenon"},
+			map[string]any{"word-of-the-day": "hapax legomenon"},
 			resfc.GetUserConfMap())
 		assert.IsType(t, &MockMessage{}, fc.GetCurrentRecord())
 	}

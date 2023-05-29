@@ -38,52 +38,52 @@ const (
 )
 
 // Info logs a message at level Info on the wrapped logger.
-func Info(v ...interface{}) {
+func Info(v ...any) {
 	log.Info(v...)
 }
 
 // Infof logs a message at level Info on the wrapped logger.
-func Infof(format string, v ...interface{}) {
+func Infof(format string, v ...any) {
 	log.Infof(format, v...)
 }
 
 // Debug logs a message at level Debug on the wrapped logger.
-func Debug(v ...interface{}) {
+func Debug(v ...any) {
 	log.Debug(v...)
 }
 
 // Debugf logs a message at level Debug on the wrapped logger.
-func Debugf(format string, v ...interface{}) {
+func Debugf(format string, v ...any) {
 	log.Debugf(format, v...)
 }
 
 // Warn logs a message at level Warn on the wrapped logger.
-func Warn(v ...interface{}) {
+func Warn(v ...any) {
 	log.Warn(v...)
 }
 
 // Warnf logs a message at level Warn on the wrapped logger.
-func Warnf(format string, v ...interface{}) {
+func Warnf(format string, v ...any) {
 	log.Warnf(format, v...)
 }
 
 // Error logs a message at level Error on the wrapped logger.
-func Error(v ...interface{}) {
+func Error(v ...any) {
 	log.Error(v...)
 }
 
 // Errorf logs a message at level Error on the wrapped logger.
-func Errorf(format string, v ...interface{}) {
+func Errorf(format string, v ...any) {
 	log.Errorf(format, v...)
 }
 
 // Fatal logs a message at level Fatal on the wrapped logger then the process will exit with status set to 1.
-func Fatal(v ...interface{}) {
+func Fatal(v ...any) {
 	log.Fatal(v...)
 }
 
 // Fatalf logs a message at level Fatal on the wrapped logger then the process will exit with status set to 1.
-func Fatalf(format string, v ...interface{}) {
+func Fatalf(format string, v ...any) {
 	log.Fatalf(format, v...)
 }
 

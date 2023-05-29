@@ -38,7 +38,7 @@ import (
 func TestInvalidFunctions(t *testing.T) {
 	testCases := []struct {
 		name     string
-		function interface{}
+		function any
 		expected error
 	}{
 		{
@@ -114,7 +114,7 @@ func TestInvokes(t *testing.T) {
 		name     string
 		input    []byte
 		expected expected
-		function interface{}
+		function any
 	}{
 		{
 			input:    input,

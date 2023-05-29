@@ -80,7 +80,7 @@ func (m *MockMessage) GetReplicatedFrom() string {
 	return "mock-cluster"
 }
 
-func (m *MockMessage) GetSchemaValue(v interface{}) error {
+func (m *MockMessage) GetSchemaValue(v any) error {
 	return nil
 }
 

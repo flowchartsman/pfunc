@@ -35,7 +35,7 @@ import (
 // executing function
 type FunctionContext struct {
 	instanceConf  *instanceConf
-	userConfigs   map[string]interface{}
+	userConfigs   map[string]any
 	logAppender   *LogAppender
 	outputMessage func(topic string) pulsar.Producer
 	userMetrics   sync.Map
@@ -146,12 +146,12 @@ func (c *FunctionContext) GetFuncVersion() string {
 
 // GetUserConfValue returns the value of a key from the pulsar function's user
 // configuration map
-func (c *FunctionContext) GetUserConfValue(key string) interface{} {
+func (c *FunctionContext) GetUserConfValue(key string) any {
 	return c.userConfigs[key]
 }
 
 // GetUserConfMap returns the pulsar function's user configuration map
-func (c *FunctionContext) GetUserConfMap() map[string]interface{} {
+func (c *FunctionContext) GetUserConfMap() map[string]any {
 	return c.userConfigs
 }
 
@@ -214,8 +214,8 @@ func FromContext(ctx context.Context) (*FunctionContext, bool) {
 	return fc, ok
 }
 
-func buildUserConfig(data string) map[string]interface{} {
-	m := make(map[string]interface{})
+func buildUserConfig(data string) map[string]any {
+	m := make(map[string]any)
 
 	json.Unmarshal([]byte(data), &m)
 

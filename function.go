@@ -94,7 +94,7 @@ func validateReturns(handler reflect.Type) error {
 	return nil
 }
 
-func newFunction(inputFunc interface{}) function {
+func newFunction(inputFunc any) function {
 	if inputFunc == nil {
 		return errorHandler(fmt.Errorf("function is nil"))
 	}
@@ -165,7 +165,7 @@ func newFunction(inputFunc interface{}) function {
 //
 // Where "input" and "output" are types compatible with the "encoding/json" standard library.
 // See https://golang.org/pkg/encoding/json/#Unmarshal for how deserialization behaves
-func Start(funcName interface{}) {
+func Start(funcName any) {
 	function := newFunction(funcName)
 	goInstance := newGoInstance()
 	err := goInstance.startFunction(function)
@@ -177,12 +177,12 @@ func Start(funcName interface{}) {
 
 // GetUserConfMap provides a means to access the pulsar function's user config
 // map before initializing the pulsar function
-func GetUserConfMap() map[string]interface{} {
+func GetUserConfMap() map[string]any {
 	return NewFuncContext().userConfigs
 }
 
 // GetUserConfValue provides access to a user configuration value before
 // initializing the pulsar function
-func GetUserConfValue(key string) interface{} {
+func GetUserConfValue(key string) any {
 	return NewFuncContext().userConfigs[key]
 }
