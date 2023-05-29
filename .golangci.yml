@@ -1,0 +1,185 @@
+run:
+  deadline: 6m
+
+linters:
+  disable-all: true
+  enable:
+    - revive
+    - bodyclose
+    - goimports
+    - gosimple
+    - ineffassign
+    - misspell
+    - staticcheck
+    - stylecheck
+    - typecheck
+    - unconvert
+    - unparam
+    - unused
+    - prealloc
+    - govet
+    # - lll
+    # - structcheck
+linters-settings:
+  govet:
+    enable-all: true
+    disable:
+      - fieldalignment
+  revive:
+    ignore-generated-header: true
+    severity: error
+    enable-all-rules: true
+    rules:
+      # Disabled
+      - name: banned-characters
+        disabled: true
+      - name: add-constant
+        disabled: true
+      - name: cognitive-complexity
+        severity: warning
+        arguments: [7]
+        disabled: true
+      - name: comment-spacings
+        disabled: true
+      - name: cyclomatic
+        disabled: true
+      - name: empty-lines
+        disabled: true
+      - name: exported
+        disabled: true
+      - name: file-header
+        disabled: true
+      - name: function-length
+        disabled: true
+      - name: imports-blacklist
+        severity: error
+        disabled: true
+        arguments:
+          - "some/package"
+      - name: line-length-limit
+        disabled: true
+      - name: max-public-structs
+        disabled: true
+      - name: modifies-parameter
+        disabled: true
+      - name: nested-structs
+        disabled: true
+      - name: package-comments
+        disabled: true
+      - name: string-format
+        diabled: true
+      - name: struct-tag
+        disabled: true
+      - name: var-naming
+        disabled: true
+      - name: unhandled-error
+        disabled: true
+      # Warnings
+      - name: argument-limit
+        severity: warning
+        arguments: [4]
+      - name: confusing-results
+        severity: warning
+      - name: context-keys-type
+        severity: warning
+      - name: datarace
+        severity: warning
+      - name: defer
+        severity: warning
+      - name: duplicated-imports
+        severity: warning
+      - name: error-naming
+        severity: warning
+      - name: error-strings
+        severity: warning
+      - name: errorf
+        severity: warning
+      - name: flag-parameter
+        severity: warning
+      - name: function-result-limit
+        severity: warning
+        arguments: [3]
+      - name: indent-error-flow
+        severity: warning
+      - name: optimize-operands-order
+        severity: warning
+      - name: range
+        severity: warning
+      - name: range-val-address
+        severity: warning
+      - name: var-declaration
+        severity: warning
+      - name: unconditional-recursion
+        severity: warning
+      - name: unexported-return
+        severity: warning
+      - name: unnecessary-stmt
+        severity: warning
+      - name: unused-parameter
+        severity: warning
+      - name: unused-receiver
+        severity: warning
+      - name: useless-break
+        severity: warning
+      # Errors
+      - name: atomic
+        severity: error
+      - name: bare-return
+        severity: error
+      - name: bool-literal-in-expr
+        severity: error
+      - name: call-to-gc
+        severity: error
+      - name: confusing-naming
+        severity: error
+      - name: constant-logical-expr
+        severity: error
+      - name: context-as-argument
+        severity: error
+        arguments:
+          - allowTypesBefore: "*testing.T"
+      - name: deep-exit
+        severity: error
+      - name: dot-imports
+        severity: error
+      - name: early-return
+        severity: error
+      - name: empty-block
+        severity: error
+      - name: error-return
+        severity: error
+      - name: get-return
+        severity: error
+      - name: identical-branches
+        severity: error
+      - name: if-return
+        severity: error
+      - name: increment-decrement
+        severity: error
+      - name: import-shadowing
+        severity: error
+      - name: modifies-value-receiver
+        severity: error
+      - name: range-val-in-closure # pending new loop semantics
+        severity: error
+      - name: receiver-naming
+        severity: error
+      - name: redefines-builtin-id
+        severity: error
+      - name: string-of-int
+        severity: error
+      - name: superfluous-else
+        severity: error
+      - name: time-equal
+        severity: error
+      - name: time-naming
+        severity: error
+      - name: unexported-naming
+        severity: error
+      - name: unreachable-code
+        severity: error
+      - name: use-any
+        severity: error
+      - name: waitgroup-by-value
+        severity: error
+isabled: false
