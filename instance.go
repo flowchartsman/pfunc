@@ -590,6 +590,10 @@ func (gi *goInstance) getMatchingMetricFromRegistry(metricName string) prometheu
 }
 
 func (gi *goInstance) getFilteredMetricFamilies(metricName string) []*prometheus_client.MetricFamily {
+	// TODO: reg is global, so this is an unused receiver. Metrics should
+	// probably be packaged into instance more sanely, or split into isolated
+	// package.
+	// Ref:  https://github.com/flowchartsman/pfunc/issues/25
 	metricFamilies, err := reg.Gather()
 	if err != nil {
 		log.Errorf("Something went wrong when calling reg.Gather(), the metricName is: %s", metricName)
