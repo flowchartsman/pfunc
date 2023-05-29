@@ -38,7 +38,6 @@ func (icServicer *InstanceControlServicer) GetFunctionStatus(
 	ctx context.Context, req *empty.Empty,
 ) (*fnapi.FunctionStatus, error) {
 	return icServicer.goInstance.getFunctionStatus(), nil
-	// return nil, status.Errorf(codes.Unimplemented, "method GetFunctionStatus not implemented")
 }
 
 func (icServicer *InstanceControlServicer) GetAndResetMetrics(
