@@ -98,7 +98,7 @@ func TestTime_EqualsThreeSecondsTimed(t *testing.T) {
 
 type MockHandler struct{}
 
-func (m *MockHandler) process(ctx context.Context, input []byte) ([]byte, error) {
+func (m *MockHandler) process(_ context.Context, input []byte) ([]byte, error) {
 	return []byte(`output`), nil
 }
 

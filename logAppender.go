@@ -65,7 +65,7 @@ func (la *LogAppender) Append(logByte []byte) {
 	asyncMsg := pulsar.ProducerMessage{
 		Payload: logByte,
 	}
-	la.producer.SendAsync(ctx, &asyncMsg, func(id pulsar.MessageID, message *pulsar.ProducerMessage, err error) {
+	la.producer.SendAsync(ctx, &asyncMsg, func(_ pulsar.MessageID, _ *pulsar.ProducerMessage, err error) {
 		if err != nil {
 			log.Fatal(err)
 		}
