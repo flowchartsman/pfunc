@@ -32,5 +32,5 @@ func HandleRequest(ctx context.Context, in []byte) error {
 }
 
 func main() {
-	pf.Start(HandleRequest)
+	pfunc.Start(HandleRequest)
 }

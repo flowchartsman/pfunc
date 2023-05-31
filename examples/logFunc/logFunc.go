@@ -36,5 +36,5 @@ func loggerFunc(ctx context.Context, input []byte) {
 }
 
 func main() {
-	pf.Start(loggerFunc)
+	pfunc.Start(loggerFunc)
 }

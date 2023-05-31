@@ -27,7 +27,7 @@ import (
 )
 
 func contextFunc(ctx context.Context) {
-	if fc, ok := pf.FromContext(ctx); ok {
+	if fc, ok := pfunc.FromContext(ctx); ok {
 		fmt.Printf("function ID is:%s, ", fc.GetFuncID())
 		fmt.Printf("function version is:%s\n", fc.GetFuncVersion())
 		fmt.Printf("Current message's ID :%s\n", string(fc.GetCurrentRecord().ID().Serialize()))
@@ -35,5 +35,5 @@ func contextFunc(ctx context.Context) {
 }
 
 func main() {
-	pf.Start(contextFunc)
+	pfunc.Start(contextFunc)
 }

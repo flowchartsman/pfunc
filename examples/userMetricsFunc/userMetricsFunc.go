@@ -28,7 +28,7 @@ import (
 
 func metricRecorderFunction(ctx context.Context, in []byte) error {
 	inputstr := string(in)
-	fctx, ok := pf.FromContext(ctx)
+	fctx, ok := pfunc.FromContext(ctx)
 	if !ok {
 		return errors.New("get Go Functions Context error")
 	}
@@ -40,5 +40,5 @@ func metricRecorderFunction(ctx context.Context, in []byte) error {
 }
 
 func main() {
-	pf.Start(metricRecorderFunction)
+	pfunc.Start(metricRecorderFunction)
 }

@@ -24,12 +24,12 @@ import (
 	"errors"
 	"log"
 
-	"github.com/apache/pulsar-client-go/pulsar"
 	"andy.dev/pfunc"
+	"github.com/apache/pulsar-client-go/pulsar"
 )
 
 func PublishFunc(ctx context.Context, in []byte) error {
-	fctx, ok := pf.FromContext(ctx)
+	fctx, ok := pfunc.FromContext(ctx)
 	if !ok {
 		return errors.New("get Go Functions Context error")
 	}
@@ -50,5 +50,5 @@ func PublishFunc(ctx context.Context, in []byte) error {
 }
 
 func main() {
-	pf.Start(PublishFunc)
+	pfunc.Start(PublishFunc)
 }

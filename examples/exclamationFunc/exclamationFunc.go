@@ -30,5 +30,5 @@ func HandleExclamation(ctx context.Context, in []byte) ([]byte, error) {
 }
 
 func main() {
-	pf.Start(HandleExclamation)
+	pfunc.Start(HandleExclamation)
 }

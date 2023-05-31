@@ -30,5 +30,5 @@ func hello() {
 }
 
 func main() {
-	pf.Start(hello)
+	pfunc.Start(hello)
 }

@@ -31,5 +31,5 @@ func HandleResponse(ctx context.Context, in []byte) ([]byte, error) {
 }
 
 func main() {
-	pf.Start(HandleResponse)
+	pfunc.Start(HandleResponse)
 }
