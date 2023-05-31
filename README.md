@@ -4,7 +4,7 @@
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/flowchartsman/pfunc?label=Latest%20Release&style=plastic)
 ![downloads](https://img.shields.io/github/downloads/flowchartsman/pfunc/total?style=plastic)
 
-**PRE-RELEASE**
+**! PFUNC IS ALPHA !**
 
 PFunc is a [Pulsar Function](https://pulsar.apache.org/docs/next/functions-overview/) SDK for Go.
 
