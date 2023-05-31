@@ -147,9 +147,8 @@ func (gi *goInstance) startFunction(function function) error {
 	metricsServicer := NewMetricsServicer(gi)
 	metricsServicer.serve()
 	defer metricsServicer.close()
-CLOSE:
+MESSAGELOOP:
 	for {
-		idleTimer.Reset(idleDuration)
 		select {
 		case cm := <-channel:
 			msgInput := cm.Message
@@ -178,9 +177,13 @@ CLOSE:
 			gi.stats.processTimeEnd()
 			gi.processResult(msgInput, output)
 		case <-idleTimer.C:
-			close(channel)
-			break CLOSE
+			close(channel) // TODO: Not great. Should use a signal channel.
+			break MESSAGELOOP
 		}
+		if !idleTimer.Stop() {
+			<-idleTimer.C
+		}
+		idleTimer.Reset(idleDuration)
 	}
 
 	gi.closeLogTopic()
