@@ -26,7 +26,7 @@ import (
 	"net"
 	"testing"
 
-	"andy.dev/pfunc/internal/fnapi"
+	"andy.dev/pfunc/internal/pb/pulsar/fn"
 	"github.com/golang/protobuf/ptypes/empty"
 	"github.com/stretchr/testify/assert"
 	"google.golang.org/grpc"
@@ -48,9 +48,9 @@ func TestInstanceControlServicer_serve_creates_valid_instance(t *testing.T) {
 	// create a gRPC server object
 	grpcServer := grpc.NewServer()
 	instance := newGoInstance()
-	servicer := InstanceControlServicer{instance}
+	servicer := InstanceControlServicer{goInstance: instance}
 	// must register before we start the service.
-	fnapi.RegisterInstanceControlServer(grpcServer, &servicer)
+	fn.RegisterInstanceControlServer(grpcServer, &servicer)
 	// start the server
 	log.Printf("Serving InstanceCommunication on port %d", instance.context.GetPort())
 
@@ -68,7 +68,7 @@ func TestInstanceControlServicer_serve_creates_valid_instance(t *testing.T) {
 		t.Fatalf("Failed to dial bufnet: %v", err)
 	}
 	defer conn.Close()
-	client := fnapi.NewInstanceControlClient(conn)
+	client := fn.NewInstanceControlClient(conn)
 	resp, err := client.HealthCheck(ctx, &empty.Empty{})
 	if err != nil {
 		t.Fatalf("SayHello failed: %v", err)
@@ -79,7 +79,7 @@ func TestInstanceControlServicer_serve_creates_valid_instance(t *testing.T) {
 	assert.Equal(t, resp.Success, true)
 }
 
-func instanceCommunicationClient(t *testing.T, instance *goInstance) fnapi.InstanceControlClient {
+func instanceCommunicationClient(t *testing.T, instance *goInstance) fn.InstanceControlClient {
 	t.Helper()
 
 	if instance == nil {
@@ -106,9 +106,9 @@ func instanceCommunicationClient(t *testing.T, instance *goInstance) fnapi.Insta
 		grpcServer.Stop()
 	})
 
-	servicer := InstanceControlServicer{instance}
+	servicer := InstanceControlServicer{goInstance: instance}
 	// must register before we start the service.
-	fnapi.RegisterInstanceControlServer(grpcServer, &servicer)
+	fn.RegisterInstanceControlServer(grpcServer, &servicer)
 
 	// start the server
 	t.Logf("Serving InstanceCommunication on port %d", instance.context.GetPort())
@@ -127,6 +127,6 @@ func instanceCommunicationClient(t *testing.T, instance *goInstance) fnapi.Insta
 	t.Cleanup(func() {
 		conn.Close()
 	})
-	client := fnapi.NewInstanceControlClient(conn)
+	client := fn.NewInstanceControlClient(conn)
 	return client
 }

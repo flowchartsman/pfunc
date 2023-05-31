@@ -24,7 +24,7 @@ import (
 
 	cfg "andy.dev/pfunc/conf"
 
-	"andy.dev/pfunc/internal/fnapi"
+	"andy.dev/pfunc/internal/pb/pulsar/fn"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -42,7 +42,7 @@ func Test_newInstanceConf(t *testing.T) {
 			killAfterIdleMs:             50000,
 			expectedHealthCheckInterval: 3,
 			metricsPort:                 50001,
-			funcDetails: fnapi.FunctionDetails{
+			funcDetails: fn.FunctionDetails{
 				Tenant:               "",
 				Namespace:            "",
 				Name:                 "go-function",
@@ -54,13 +54,13 @@ func Test_newInstanceConf(t *testing.T) {
 				Runtime:              0,
 				AutoAck:              true,
 				Parallelism:          0,
-				Source: &fnapi.SourceSpec{
-					SubscriptionType: fnapi.SubscriptionType(0),
-					InputSpecs: map[string]*fnapi.ConsumerSpec{
+				Source: &fn.SourceSpec{
+					SubscriptionType: fn.SubscriptionType(0),
+					InputSpecs: map[string]*fn.ConsumerSpec{
 						"persistent://public/default/topic-01": {
 							SchemaType:     "",
 							IsRegexPattern: false,
-							ReceiverQueueSize: &fnapi.ConsumerSpec_ReceiverQueueSize{
+							ReceiverQueueSize: &fn.ConsumerSpec_ReceiverQueueSize{
 								Value: 10,
 							},
 						},
@@ -68,19 +68,19 @@ func Test_newInstanceConf(t *testing.T) {
 					TimeoutMs:            0,
 					SubscriptionName:     "",
 					CleanupSubscription:  false,
-					SubscriptionPosition: fnapi.SubscriptionPosition_EARLIEST,
+					SubscriptionPosition: fn.SubscriptionPosition_EARLIEST,
 				},
-				Sink: &fnapi.SinkSpec{
+				Sink: &fn.SinkSpec{
 					Topic:      "persistent://public/default/topic-02",
 					SchemaType: "",
 				},
-				Resources: &fnapi.Resources{
+				Resources: &fn.Resources{
 					Cpu:  0,
 					Ram:  0,
 					Disk: 0,
 				},
 				PackageUrl: "",
-				RetryDetails: &fnapi.RetryDetails{
+				RetryDetails: &fn.RetryDetails{
 					MaxMessageRetries: 0,
 					DeadLetterTopic:   "",
 				},
