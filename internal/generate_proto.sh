@@ -7,6 +7,7 @@ mkdir -p pb
 
 tmpdir=$(mktemp -d 2>/dev/null || mktemp -d -t 'pfunc-proto')
 
+pkg_prefix="andy.dev/pfunc/internal/pb/bookkeeper"
 plref=3.0.0
 bkref=release-4.16.1
 echo pulling bookkeeper stream proto
@@ -14,11 +15,11 @@ mkdir $tmpdir/bk
 
 curl -sL https://github.com/apache/bookkeeper/archive/refs/tags/$bkref.tar.gz | tar xz -C $tmpdir/bk --strip-components=6 bookkeeper-$bkref/stream/proto/src/main/proto
 for file in $tmpdir/bk/*.proto; do
-    pkg_name=`grep "^package" $file |sed -n 's#package \(.*\);#\1#p'|sed -rn 's#proto\.?##p' | sed 's#\.#\/#g'`
-    sed -r -i${SP}'' "s#^option java_package.*#option go_package = \"$pkg_name\";#" $file
+    pkg_name=`grep "^package" $file |sed -n 's#package \(.*\);#\1#p'|sed -rn 's#bookkeeper\.proto\.##p' | sed 's#\.#\/#g'`
+    sed -r -i${SP}'' "s#^option java_package.*#option go_package = \"$pkg_prefix/$pkg_name\";#" $file
 done
 echo generating bookkeeper libs
-protoc --proto_path $tmpdir/bk --go_out=./pb --go-grpc_out=./pb $tmpdir/bk/*.proto
+protoc --proto_path $tmpdir/bk --go_out=./pb --go_opt=module="andy.dev/pfunc/internal/pb" --go-grpc_out=./pb --go-grpc_opt=module="andy.dev/pfunc/internal/pb" $tmpdir/bk/*.proto
 
 cat <<EOF > ./pb/bookkeeper/doc.go
 // Package bookkeeper provides the protocol buffer messages that Bookkeeper

@@ -34,6 +34,7 @@ import (
 // message, what are our operating constraints, etc can be accessed by the
 // executing function
 type FunctionContext struct {
+	stateService
 	instanceConf  *instanceConf
 	userConfigs   map[string]any
 	logAppender   *LogAppender
