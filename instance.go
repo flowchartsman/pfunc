@@ -21,8 +21,10 @@ package pfunc
 
 import (
 	"context"
+	"fmt"
 	"math"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/golang/protobuf/ptypes/empty"
@@ -192,8 +194,27 @@ MESSAGELOOP:
 }
 
 func (gi *goInstance) setupClient() error {
+	ic := gi.context.instanceConf
+
+	var authProvider pulsar.Authentication
+	switch ic.authPlugin {
+	case "":
+		authProvider, _ = pulsar.NewAuthentication("", "")
+	case "org.apache.pulsar.client.impl.auth.AuthenticationToken":
+		switch {
+		case strings.HasPrefix(ic.authParams, "file://"):
+			authProvider = pulsar.NewAuthenticationTokenFromFile(ic.authParams[7:])
+		case strings.HasPrefix(ic.authParams, "token:"):
+			authProvider = pulsar.NewAuthenticationToken(ic.authParams[6:])
+		default:
+			return fmt.Errorf(`unknown token format - expecting "file://" or "token:" prefix`)
+		}
+	default:
+		return fmt.Errorf("unknown auth provider: %s", ic.authPlugin)
+	}
 	client, err := pulsar.NewClient(pulsar.ClientOptions{
-		URL: gi.context.instanceConf.pulsarServiceURL,
+		URL:            gi.context.instanceConf.pulsarServiceURL,
+		Authentication: authProvider,
 	})
 	if err != nil {
 		log.Errorf("create client error:%v", err)
