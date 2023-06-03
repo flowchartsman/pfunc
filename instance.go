@@ -195,35 +195,38 @@ MESSAGELOOP:
 
 const (
 	authPluginToken = "org.apache.pulsar.client.impl.auth.AuthenticationToken"
-	authPluginNone = ""
+	authPluginNone  = ""
 )
-
 
 func (gi *goInstance) setupClient() error {
 	ic := gi.context.instanceConf
 
-	var authProvider pulsar.Authentication
+	clientOpts := pulsar.ClientOptions{
+		URL:                        gi.context.instanceConf.pulsarServiceURL,
+		TLSTrustCertsFilePath:      ic.tlsTrustCertsPath,
+		TLSAllowInsecureConnection: ic.tlsAllowInsecure,
+		TLSValidateHostname:        ic.tlsHostnameVerification,
+	}
+
 	switch ic.authPlugin {
 	case authPluginToken:
 		switch {
 		case strings.HasPrefix(ic.authParams, "file://"):
-			authProvider = pulsar.NewAuthenticationTokenFromFile(ic.authParams[7:])
+			clientOpts.Authentication = pulsar.NewAuthenticationTokenFromFile(ic.authParams[7:])
 		case strings.HasPrefix(ic.authParams, "token:"):
-			authProvider = pulsar.NewAuthenticationToken(ic.authParams[6:])
-		case ic.authParams == "" :
+			clientOpts.Authentication = pulsar.NewAuthenticationToken(ic.authParams[6:])
+		case ic.authParams == "":
 			return fmt.Errorf("auth plugin %s given, but authParams is empty", authPluginToken)
 		default:
 			return fmt.Errorf(`unknown token format - expecting "file://" or "token:" prefix`)
 		}
 	case authPluginNone:
-		authProvider, _ = pulsar.NewAuthentication("", "")
+		clientOpts.Authentication, _ = pulsar.NewAuthentication("", "") // ret: auth.NewAuthDisabled()
 	default:
 		return fmt.Errorf("unknown auth provider: %s", ic.authPlugin)
 	}
-	client, err := pulsar.NewClient(pulsar.ClientOptions{
-		URL:            gi.context.instanceConf.pulsarServiceURL,
-		Authentication: authProvider,
-	})
+
+	client, err := pulsar.NewClient(clientOpts)
 	if err != nil {
 		log.Errorf("create client error:%v", err)
 		gi.stats.incrTotalSysExceptions(err)

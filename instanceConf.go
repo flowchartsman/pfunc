@@ -38,11 +38,16 @@ type instanceConf struct {
 	port                        int
 	clusterName                 string
 	pulsarServiceURL            string
+	stateServiceURL             string
+	pulsarWebServiceURL         string
 	killAfterIdleMs             int
 	expectedHealthCheckInterval int32
 	metricsPort                 int
 	authPlugin                  string
 	authParams                  string
+	tlsTrustCertsPath           string
+	tlsAllowInsecure            bool
+	tlsHostnameVerification     bool
 }
 
 func newInstanceConfWithConf(cfg *conf.Conf) *instanceConf {
@@ -72,6 +77,8 @@ func newInstanceConfWithConf(cfg *conf.Conf) *instanceConf {
 		port:                        cfg.Port,
 		clusterName:                 cfg.ClusterName,
 		pulsarServiceURL:            cfg.PulsarServiceURL,
+		stateServiceURL:             cfg.StateStorageServiceURL,
+		pulsarWebServiceURL:         cfg.PulsarWebServiceURL,
 		killAfterIdleMs:             cfg.KillAfterIdleMs,
 		expectedHealthCheckInterval: cfg.ExpectedHealthCheckInterval,
 		metricsPort:                 cfg.MetricsPort,
@@ -108,8 +115,11 @@ func newInstanceConfWithConf(cfg *conf.Conf) *instanceConf {
 			},
 			UserConfig: cfg.UserConfig,
 		},
-		authPlugin: cfg.AuthPlugin,
-		authParams: cfg.AuthParams,
+		authPlugin:              cfg.ClientAuthenticationPlugin,
+		authParams:              cfg.ClientAuthenticationParameters,
+		tlsTrustCertsPath:       cfg.TLSTrustCertsFilePath,
+		tlsAllowInsecure:        cfg.TLSAllowInsecureConnection,
+		tlsHostnameVerification: cfg.TLSHostnameVerificationEnable,
 	}
 
 	if instanceConf.funcDetails.ProcessingGuarantees == fn.ProcessingGuarantees_EFFECTIVELY_ONCE {

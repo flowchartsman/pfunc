@@ -33,6 +33,8 @@ import (
 
 type Conf struct {
 	PulsarServiceURL string `json:"pulsarServiceURL" yaml:"pulsarServiceURL"`
+	StateStorageServiceURL string        `json:"stateStorageServiceUrl" yaml:"stateStorageServiceUrl"`
+	PulsarWebServiceURL    string        `json:"pulsarWebServiceUrl" yaml:"pulsarWebServiceUrl"`
 	InstanceID       int    `json:"instanceID" yaml:"instanceID"`
 	FuncID           string `json:"funcID" yaml:"funcID"`
 	FuncVersion      string `json:"funcVersion" yaml:"funcVersion"`
@@ -48,8 +50,12 @@ type Conf struct {
 	ProcessingGuarantees int32  `json:"processingGuarantees" yaml:"processingGuarantees"`
 	SecretsMap           string `json:"secretsMap" yaml:"secretsMap"`
 	Runtime              int32  `json:"runtime" yaml:"runtime"`
-	AuthPlugin           string `json:"authPlugin" yaml:"authPlugin"`
-	AuthParams           string `json:"authParams" yaml:"authParams"`
+	// Authentication
+	ClientAuthenticationPlugin     string `json:"clientAuthenticationPlugin" yaml:"clientAuthenticationPlugin"`
+	ClientAuthenticationParameters string `json:"clientAuthenticationParameters" yaml:"clientAuthenticationParameters"`
+	TLSTrustCertsFilePath          string `json:"tlsTrustCertsFilePath" yaml:"tlsTrustCertsFilePath"`
+	TLSAllowInsecureConnection     bool   `json:"tlsAllowInsecureConnection" yaml:"tlsAllowInsecureConnection"`
+	TLSHostnameVerificationEnable  bool   `json:"tlsHostnameVerificationEnable" yaml:"tlsHostnameVerificationEnable"`
 	// Deprecated
 	AutoACK     bool  `json:"autoAck" yaml:"autoAck"`
 	Parallelism int32 `json:"parallelism" yaml:"parallelism"`
