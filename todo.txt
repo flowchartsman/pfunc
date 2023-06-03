@@ -1,0 +1,2 @@
+BIG maybe: instead of multiple function signatures or a unified function
+signature, put shared code in root dir and then have subpackages with different paradigms.

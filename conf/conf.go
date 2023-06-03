@@ -32,16 +32,16 @@ import (
 )
 
 type Conf struct {
-	PulsarServiceURL string `json:"pulsarServiceURL" yaml:"pulsarServiceURL"`
-	StateStorageServiceURL string        `json:"stateStorageServiceUrl" yaml:"stateStorageServiceUrl"`
-	PulsarWebServiceURL    string        `json:"pulsarWebServiceUrl" yaml:"pulsarWebServiceUrl"`
-	InstanceID       int    `json:"instanceID" yaml:"instanceID"`
-	FuncID           string `json:"funcID" yaml:"funcID"`
-	FuncVersion      string `json:"funcVersion" yaml:"funcVersion"`
-	MaxBufTuples     int    `json:"maxBufTuples" yaml:"maxBufTuples"`
-	Port             int    `json:"port" yaml:"port"`
-	ClusterName      string `json:"clusterName" yaml:"clusterName"`
-	KillAfterIdleMs  int    `json:"killAfterIdleMs" yaml:"killAfterIdleMs"`
+	PulsarServiceURL       string `json:"pulsarServiceURL" yaml:"pulsarServiceURL"`
+	StateStorageServiceURL string `json:"stateStorageServiceUrl" yaml:"stateStorageServiceUrl"`
+	PulsarWebServiceURL    string `json:"pulsarWebServiceUrl" yaml:"pulsarWebServiceUrl"`
+	InstanceID             int    `json:"instanceID" yaml:"instanceID"`
+	FuncID                 string `json:"funcID" yaml:"funcID"`
+	FuncVersion            string `json:"funcVersion" yaml:"funcVersion"`
+	MaxBufTuples           int    `json:"maxBufTuples" yaml:"maxBufTuples"`
+	Port                   int    `json:"port" yaml:"port"`
+	ClusterName            string `json:"clusterName" yaml:"clusterName"`
+	KillAfterIdleMs        int    `json:"killAfterIdleMs" yaml:"killAfterIdleMs"`
 	// function details config
 	Tenant               string `json:"tenant" yaml:"tenant"`
 	NameSpace            string `json:"nameSpace" yaml:"nameSpace"`
