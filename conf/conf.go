@@ -24,7 +24,6 @@ import (
 	"errors"
 	"flag"
 	"io/fs"
-	"io/ioutil"
 	"os"
 
 	log "andy.dev/pfunc/logutil"
@@ -149,7 +148,7 @@ func GetConf() *Conf {
 	}
 
 	// otherwise load from the file
-	yamlFile, err := ioutil.ReadFile(confFilePath)
+	yamlFile, err := os.ReadFile(confFilePath)
 	if err != nil {
 		if errors.Is(err, fs.ErrNotExist) {
 			log.Errorf("supplied config file does not exist")
