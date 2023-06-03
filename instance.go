@@ -78,7 +78,7 @@ func newGoInstance() *goInstance {
 	}
 	goInstance.context.stateService = noopStateService{}
 
-	if goInstance.context.instanceConf.stateStorageServiceURL != "" {
+	if goInstance.context.instanceConf.stateServiceURL != "" {
 		goInstance.context.stateService, _ = newbkStateService(goInstance.context.instanceConf)
 	}
 

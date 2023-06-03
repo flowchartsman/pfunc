@@ -29,7 +29,7 @@ type bkStateService struct {
 // need to call from init with instanceConfig if stateStorageServiceURL is set.
 // else no-op
 func newbkStateService(instanceConf *instanceConf) (*bkStateService, error) {
-	u, err := url.Parse(instanceConf.stateStorageServiceURL)
+	u, err := url.Parse(instanceConf.stateServiceURL)
 	if err != nil {
 		return nil, fmt.Errorf("parsing state storage url: %v", err)
 	}
