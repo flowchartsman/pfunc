@@ -28,10 +28,11 @@ import (
 	"testing"
 	"time"
 
-	"github.com/golang/protobuf/proto"
-	"github.com/golang/protobuf/ptypes/empty"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/stretchr/testify/assert"
+	"google.golang.org/protobuf/encoding/prototext"
+	"google.golang.org/protobuf/protoadapt"
+	"google.golang.org/protobuf/types/known/emptypb"
 
 	prometheus_client "github.com/prometheus/client_model/go"
 )
@@ -73,76 +74,7 @@ func TestExampleSummaryVec(t *testing.T) {
 		t.Fatal("Too many metric families")
 	}
 	// Then, we need to filter the metrics in the family to one that matches our label.
-	expectedValue := "name: \"pond_temperature_celsius\"\n" +
-		"help: \"The temperature of the frog pond.\"\n" +
-		"type: SUMMARY\n" +
-		"metric: <\n" +
-		"  label: <\n" +
-		"    name: \"species\"\n" +
-		"    value: \"leiopelma-hochstetteri\"\n" +
-		"  >\n" +
-		"  summary: <\n" +
-		"    sample_count: 0\n" +
-		"    sample_sum: 0\n" +
-		"    quantile: <\n" +
-		"      quantile: 0.5\n" +
-		"      value: nan\n" +
-		"    >\n" +
-		"    quantile: <\n" +
-		"      quantile: 0.9\n" +
-		"      value: nan\n" +
-		"    >\n" +
-		"    quantile: <\n" +
-		"      quantile: 0.99\n" +
-		"      value: nan\n" +
-		"    >\n" +
-		"  >\n" +
-		">\n" +
-		"metric: <\n" +
-		"  label: <\n" +
-		"    name: \"species\"\n" +
-		"    value: \"lithobates-catesbeianus\"\n" +
-		"  >\n" +
-		"  summary: <\n" +
-		"    sample_count: 1000\n" +
-		"    sample_sum: 31956.100000000017\n" +
-		"    quantile: <\n" +
-		"      quantile: 0.5\n" +
-		"      value: 32.4\n" +
-		"    >\n" +
-		"    quantile: <\n" +
-		"      quantile: 0.9\n" +
-		"      value: 41.4\n" +
-		"    >\n" +
-		"    quantile: <\n" +
-		"      quantile: 0.99\n" +
-		"      value: 41.9\n" +
-		"    >\n" +
-		"  >\n" +
-		">\n" +
-		"metric: <\n" +
-		"  label: <\n" +
-		"    name: \"species\"\n" +
-		"    value: \"litoria-caerulea\"\n" +
-		"  >\n" +
-		"  summary: <\n" +
-		"    sample_count: 1000\n" +
-		"    sample_sum: 29969.50000000001\n" +
-		"    quantile: <\n" +
-		"      quantile: 0.5\n" +
-		"      value: 31.1\n" +
-		"    >\n" +
-		"    quantile: <\n" +
-		"      quantile: 0.9\n" +
-		"      value: 41.3\n" +
-		"    >\n" +
-		"    quantile: <\n" +
-		"      quantile: 0.99\n" +
-		"      value: 41.9\n" +
-		"    >\n" +
-		"  >\n" +
-		">\n"
-	assert.Equal(t, expectedValue, proto.MarshalTextString(metricFamilies[0]))
+	assert.Equal(t, expectedVec, prototext.Format(protoadapt.MessageV2Of(metricFamilies[0])))
 }
 
 func TestExampleSummaryVec_Pulsar(t *testing.T) {
@@ -193,6 +125,77 @@ func TestExampleSummaryVec_Pulsar(t *testing.T) {
 	assert.Equal(t, 61925, int(*sum))
 	assert.Equal(t, 2000, int(*count))
 }
+
+const expectedVec = `name:  "pond_temperature_celsius"
+help:  "The temperature of the frog pond."
+type:  SUMMARY
+metric:  {
+  label:  {
+    name:  "species"
+    value:  "leiopelma-hochstetteri"
+  }
+  summary:  {
+    sample_count:  0
+    sample_sum:  0
+    quantile:  {
+      quantile:  0.5
+      value:  nan
+    }
+    quantile:  {
+      quantile:  0.9
+      value:  nan
+    }
+    quantile:  {
+      quantile:  0.99
+      value:  nan
+    }
+  }
+}
+metric:  {
+  label:  {
+    name:  "species"
+    value:  "lithobates-catesbeianus"
+  }
+  summary:  {
+    sample_count:  1000
+    sample_sum:  31956.100000000017
+    quantile:  {
+      quantile:  0.5
+      value:  32.4
+    }
+    quantile:  {
+      quantile:  0.9
+      value:  41.4
+    }
+    quantile:  {
+      quantile:  0.99
+      value:  41.9
+    }
+  }
+}
+metric:  {
+  label:  {
+    name:  "species"
+    value:  "litoria-caerulea"
+  }
+  summary:  {
+    sample_count:  1000
+    sample_sum:  29969.50000000001
+    quantile:  {
+      quantile:  0.5
+      value:  31.1
+    }
+    quantile:  {
+      quantile:  0.9
+      value:  41.3
+    }
+    quantile:  {
+      quantile:  0.99
+      value:  41.9
+    }
+  }
+}
+`
 
 func TestMetricsServer(t *testing.T) {
 	gi := newGoInstance()
@@ -267,7 +270,7 @@ func TestInstanceControlMetrics(t *testing.T) {
 	instance := newGoInstance()
 	t.Cleanup(instance.close)
 	instanceClient := instanceCommunicationClient(t, instance)
-	_, err := instanceClient.GetMetrics(context.Background(), &empty.Empty{})
+	_, err := instanceClient.GetMetrics(context.Background(), &emptypb.Empty{})
 	assert.NoError(t, err, "err communicating with instance control: %v", err)
 
 	testLabels := []string{"userMetricControlTest1", "userMetricControlTest2"}
@@ -280,7 +283,7 @@ func TestInstanceControlMetrics(t *testing.T) {
 	}
 	time.Sleep(time.Second)
 
-	metrics, err := instanceClient.GetMetrics(context.Background(), &empty.Empty{})
+	metrics, err := instanceClient.GetMetrics(context.Background(), &emptypb.Empty{})
 	assert.NoError(t, err, "err communicating with instance control: %v", err)
 	for value, label := range testLabels {
 		assert.Containsf(t, metrics.UserMetrics, label, "user metrics should contain metric %s", label)
