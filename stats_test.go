@@ -22,7 +22,7 @@ package pfunc
 import (
 	"context"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"math"
 	"net/http"
 	"testing"
@@ -208,7 +208,7 @@ func TestMetricsServer(t *testing.T) {
 	assert.Equal(t, nil, err)
 	assert.NotEqual(t, nil, resp)
 	assert.Equal(t, 200, resp.StatusCode)
-	body, err := ioutil.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
 	assert.Equal(t, nil, err)
 	assert.NotEmpty(t, body)
 	resp.Body.Close()
@@ -217,7 +217,7 @@ func TestMetricsServer(t *testing.T) {
 	assert.Equal(t, nil, err)
 	assert.NotEqual(t, nil, resp)
 	assert.Equal(t, 200, resp.StatusCode)
-	body, err = ioutil.ReadAll(resp.Body)
+	body, err = io.ReadAll(resp.Body)
 	assert.Equal(t, nil, err)
 	assert.NotEmpty(t, body)
 	resp.Body.Close()
@@ -235,7 +235,7 @@ func TestUserMetrics(t *testing.T) {
 	assert.Equal(t, nil, err)
 	assert.NotEqual(t, nil, resp)
 	assert.Equal(t, 200, resp.StatusCode)
-	body, err := ioutil.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
 	assert.Equal(t, nil, err)
 	assert.NotEmpty(t, body)
 	assert.NotContainsf(t, string(body), "pulsar_function_user_metric", "user metric should not appear yet")
@@ -251,7 +251,7 @@ func TestUserMetrics(t *testing.T) {
 	assert.Equal(t, nil, err)
 	assert.NotEqual(t, nil, resp)
 	assert.Equal(t, 200, resp.StatusCode)
-	body, err = ioutil.ReadAll(resp.Body)
+	body, err = io.ReadAll(resp.Body)
 	assert.Equal(t, nil, err)
 	assert.NotEmpty(t, body)
 
