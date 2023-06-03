@@ -182,4 +182,13 @@ linters-settings:
         severity: error
       - name: waitgroup-by-value
         severity: error
-isabled: false
+issues:
+  exclude-rules:
+    - path: '(.+)_test\.go'
+      linters:
+        - funlen
+        - goconst
+    - path: '(.+)_test\.go'
+      text: "^unused-receiver:"
+    - path: '(.+)_test\.go'
+      text: "^unused-parameter:"
