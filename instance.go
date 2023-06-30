@@ -340,17 +340,19 @@ func (gi *goInstance) setupConsumer() (chan pulsar.ConsumerMessage, error) {
 			consumerOptions.ReceiverQueueSize = int(consumerConf.ReceiverQueueSize.Value)
 		}
 		retryTopicName := ""
-		retryDetails := funcDetails.RetryDetails
-		if retryDetails != nil && retryDetails.MaxMessageRetries > 0 {
-			consumerOptions.RetryEnable = true
-			maxDeliveries := uint32(retryDetails.MaxMessageRetries)
-			consumerOptions.DLQ = &pulsar.DLQPolicy{
-				// RetryLetterTopic not currently sent to functions.
-				DeadLetterTopic: retryDetails.DeadLetterTopic,
-				MaxDeliveries:   maxDeliveries,
+		/*
+			retryDetails := funcDetails.RetryDetails
+			if retryDetails != nil && retryDetails.MaxMessageRetries > 0 {
+				consumerOptions.RetryEnable = true
+				maxDeliveries := uint32(retryDetails.MaxMessageRetries)
+				consumerOptions.DLQ = &pulsar.DLQPolicy{
+					// RetryLetterTopic not currently sent to functions.
+					DeadLetterTopic: retryDetails.DeadLetterTopic,
+					MaxDeliveries:   maxDeliveries,
+				}
+				retryTopicName = topicName.Name + pulsar.RetryTopicSuffix
 			}
-			retryTopicName = topicName.Name + pulsar.RetryTopicSuffix
-		}
+		*/
 
 		log.Debugf("Setting up consumer for topic: %s with subscription name: %s", topicName.Name, subscriptionName)
 		consumer, err := gi.client.Subscribe(consumerOptions)
