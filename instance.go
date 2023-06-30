@@ -300,12 +300,13 @@ func (gi *goInstance) getProducer(topicName string) (pulsar.Producer, error) {
 }
 
 func (gi *goInstance) setupConsumer() (chan pulsar.ConsumerMessage, error) {
+	funcDetails := &gi.context.instanceConf.funcDetails
+
 	subscriptionType := pulsar.Shared
-	if int32(gi.context.instanceConf.funcDetails.Source.SubscriptionType) == fn.SubscriptionType_value["FAILOVER"] {
+	if int32(funcDetails.Source.SubscriptionType) == fn.SubscriptionType_value["FAILOVER"] {
 		subscriptionType = pulsar.Failover
 	}
 
-	funcDetails := &gi.context.instanceConf.funcDetails
 	subscriptionName := funcDetails.Tenant + "/" + funcDetails.Namespace + "/" + funcDetails.Name
 	if funcDetails.Source != nil && funcDetails.Source.SubscriptionName != "" {
 		subscriptionName = funcDetails.Source.SubscriptionName
@@ -318,65 +319,50 @@ func (gi *goInstance) setupConsumer() (chan pulsar.ConsumerMessage, error) {
 
 	channel := make(chan pulsar.ConsumerMessage)
 
-	var (
-		consumer  pulsar.Consumer
-		topicName *TopicName
-		err       error
-	)
-
 	for topic, consumerConf := range funcDetails.Source.InputSpecs {
-		topicName, err = ParseTopicName(topic)
+		topicName, err := ParseTopicName(topic)
 		if err != nil {
 			return nil, err
 		}
 
-		log.Debugf("Setting up consumer for topic: %s with subscription name: %s", topicName.Name, subscriptionName)
-		if consumerConf.ReceiverQueueSize != nil {
-			if consumerConf.IsRegexPattern {
-				consumer, err = gi.client.Subscribe(pulsar.ConsumerOptions{
-					TopicsPattern:     topicName.Name,
-					ReceiverQueueSize: int(consumerConf.ReceiverQueueSize.Value),
-					SubscriptionName:  subscriptionName,
-					Properties:        properties,
-					Type:              subscriptionType,
-					MessageChannel:    channel,
-				})
-			} else {
-				consumer, err = gi.client.Subscribe(pulsar.ConsumerOptions{
-					Topic:             topicName.Name,
-					SubscriptionName:  subscriptionName,
-					Properties:        properties,
-					Type:              subscriptionType,
-					ReceiverQueueSize: int(consumerConf.ReceiverQueueSize.Value),
-					MessageChannel:    channel,
-				})
-			}
+		consumerOptions := pulsar.ConsumerOptions{
+			SubscriptionName: subscriptionName,
+			Properties:       properties,
+			Type:             subscriptionType,
+			MessageChannel:   channel,
+		}
+		if consumerConf.IsRegexPattern {
+			consumerOptions.TopicsPattern = topicName.Name
 		} else {
-			if consumerConf.IsRegexPattern {
-				consumer, err = gi.client.Subscribe(pulsar.ConsumerOptions{
-					TopicsPattern:    topicName.Name,
-					SubscriptionName: subscriptionName,
-					Properties:       properties,
-					Type:             subscriptionType,
-					MessageChannel:   channel,
-				})
-			} else {
-				consumer, err = gi.client.Subscribe(pulsar.ConsumerOptions{
-					Topic:            topicName.Name,
-					SubscriptionName: subscriptionName,
-					Properties:       properties,
-					Type:             subscriptionType,
-					MessageChannel:   channel,
-				})
+			consumerOptions.Topic = topicName.Name
+		}
+		if consumerConf.ReceiverQueueSize != nil {
+			consumerOptions.ReceiverQueueSize = int(consumerConf.ReceiverQueueSize.Value)
+		}
+		retryTopicName := ""
+		retryDetails := funcDetails.RetryDetails
+		if retryDetails != nil && retryDetails.MaxMessageRetries > 0 {
+			consumerOptions.RetryEnable = true
+			maxDeliveries := uint32(retryDetails.MaxMessageRetries)
+			consumerOptions.DLQ = &pulsar.DLQPolicy{
+				// RetryLetterTopic not currently sent to functions.
+				DeadLetterTopic: retryDetails.DeadLetterTopic,
+				MaxDeliveries:   maxDeliveries,
 			}
+			retryTopicName = topicName.Name + pulsar.RetryTopicSuffix
 		}
 
+		log.Debugf("Setting up consumer for topic: %s with subscription name: %s", topicName.Name, subscriptionName)
+		consumer, err := gi.client.Subscribe(consumerOptions)
 		if err != nil {
 			log.Errorf("create consumer error:%s", err.Error())
 			gi.stats.incrTotalSysExceptions(err)
 			return nil, err
 		}
 		gi.consumers[topicName.Name] = consumer
+		if retryTopicName != "" {
+			gi.consumers[retryTopicName] = consumer
+		}
 	}
 	return channel, nil
 }
