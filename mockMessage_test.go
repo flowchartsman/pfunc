@@ -60,6 +60,20 @@ func (m *MockMessage) EventTime() time.Time {
 	return time.Now()
 }
 
+func (m *MockMessage) BrokerPublishTime() *time.Time {
+	t := time.Now()
+	return &t
+}
+
+func (m *MockMessage) Index() *uint64 {
+	i := uint64(0)
+	return &i
+}
+
+func (m *MockMessage) SchemaVersion() []byte {
+	return []byte{'0'}
+}
+
 func (m *MockMessage) Key() string {
 	return "key"
 }
@@ -108,6 +122,14 @@ func (m *MockMessageID) BatchIdx() int32 {
 
 func (m *MockMessageID) PartitionIdx() int32 {
 	return 0
+}
+
+func (m *MockMessageID) BatchSize() int32 {
+	return 0
+}
+
+func (m *MockMessageID) String() string {
+	return "0:0:0"
 }
 
 type MockPulsarProducer struct{}
