@@ -53,7 +53,7 @@ func (la *LogAppender) Start() error {
 		},
 	})
 	if err != nil {
-		log.Errorf("create producer error:%s", err.Error())
+		log.Errorf("creating log producer: %v", err)
 		return err
 	}
 	la.producer = producer

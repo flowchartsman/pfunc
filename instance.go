@@ -292,7 +292,7 @@ func (gi *goInstance) getProducer(topicName string) (pulsar.Producer, error) {
 	})
 	if err != nil {
 		gi.stats.incrTotalSysExceptions(err)
-		log.Errorf("create producer error:%s", err.Error())
+		log.Errorf("creating primary output producer: %v", err)
 		return nil, err
 	}
 
