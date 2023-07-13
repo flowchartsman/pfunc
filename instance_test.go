@@ -96,6 +96,10 @@ func TestTime_EqualsThreeSecondsTimed(t *testing.T) {
 	assert.True(t, time.Duration(diff) < time.Millisecond*3100)
 }
 
+func testProcessor(_ context.Context, input InputMessage) (*FnOutput, error) {
+	return OutputMessage([]byte(`output`)), nil
+}
+
 type MockHandler struct{}
 
 func (m *MockHandler) process(_ context.Context, input []byte) ([]byte, error) {
@@ -103,10 +107,9 @@ func (m *MockHandler) process(_ context.Context, input []byte) ([]byte, error) {
 }
 
 func Test_goInstance_handlerMsg(t *testing.T) {
-	handler := &MockHandler{}
 	fc := NewFuncContext()
 	instance := &goInstance{
-		function: handler,
+		function: testProcessor,
 		context:  fc,
 	}
 	message := &MockMessage{payload: []byte(`{}`)}
@@ -114,6 +117,6 @@ func Test_goInstance_handlerMsg(t *testing.T) {
 	output, err := instance.handlerMsg(message)
 
 	assert.Nil(t, err)
-	assert.Equal(t, "output", string(output))
+	assert.Equal(t, "output", string(output.primary.msg.Payload))
 	assert.Equal(t, message, fc.record)
 }

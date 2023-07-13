@@ -34,12 +34,11 @@ import (
 // message, what are our operating constraints, etc can be accessed by the
 // executing function
 type FunctionContext struct {
-	instanceConf  *instanceConf
-	userConfigs   map[string]any
-	logAppender   *LogAppender
-	outputMessage func(topic string) pulsar.Producer
-	userMetrics   sync.Map
-	record        pulsar.Message
+	instanceConf *instanceConf
+	userConfigs  map[string]any
+	logAppender  *LogAppender
+	userMetrics  sync.Map
+	record       pulsar.Message
 }
 
 // NewFuncContext returns a new Function context
@@ -155,11 +154,9 @@ func (c *FunctionContext) GetUserConfMap() map[string]any {
 	return c.userConfigs
 }
 
-// NewOutputMessage send message to the topic @param topicName: The name of the
-// topic for output message
-func (c *FunctionContext) NewOutputMessage(topicName string) pulsar.Producer {
-	return c.outputMessage(topicName)
-}
+// TODO: SendOutput
+// TODO: SendOutputMessage
+// func (c *FunctionContext) NewOutputMessage(topicName string) pulsar.Producer {
 
 // SetCurrentRecord sets the current message into the function context called
 // for each message before executing a handler function

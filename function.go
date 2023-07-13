@@ -142,33 +142,10 @@ func newFunction(inputFunc any) function {
 	})
 }
 
-// Rules:
-//
-//   - handler must be a function
-//   - handler may take between 0 and two arguments.
-//   - if there are two arguments, the first argument must satisfy the "context.Context" interface.
-//   - handler may return between 0 and two arguments.
-//   - if there are two return values, the second argument must be an error.
-//   - if there is one return value it must be an error.
-//
-// Valid function signatures:
-//
-//	func ()
-//	func () error
-//	func (input) error
-//	func () (output, error)
-//	func (input) (output, error)
-//	func (context.Context) error
-//	func (context.Context, input) error
-//	func (context.Context) (output, error)
-//	func (context.Context, input) (output, error)
-//
-// Where "input" and "output" are types compatible with the "encoding/json" standard library.
-// See https://golang.org/pkg/encoding/json/#Unmarshal for how deserialization behaves
-func Start(funcName any) {
-	function := newFunction(funcName)
+func Start[P Processor](function P) {
+	fn := wrapFunction(function)
 	goInstance := newGoInstance()
-	err := goInstance.startFunction(function)
+	err := goInstance.startFunction(fn)
 	if err != nil {
 		log.Fatal(fmt.Errorf("startFunction failed: %v", err))
 	}
