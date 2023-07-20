@@ -48,6 +48,9 @@ func (tm *TopicMsg) WithKey(key string) *TopicMsg {
 
 // WithProperty sets a single property on a TopicMessage
 func (tm *TopicMsg) WithProperty(key, value string) *TopicMsg {
+	if tm.msg.Properties == nil {
+		tm.msg.Properties = map[string]string{}
+	}
 	tm.msg.Properties[key] = value
 	return tm
 }
@@ -56,6 +59,9 @@ func (tm *TopicMsg) WithProperty(key, value string) *TopicMsg {
 func (tm *TopicMsg) WithProperties(keyvals ...string) *TopicMsg {
 	if len(keyvals)%2 != 0 {
 		panic("WithProperties - odd number of property keyvals")
+	}
+	if tm.msg.Properties == nil {
+		tm.msg.Properties = make(map[string]string, len(keyvals)/2)
 	}
 	for i := 0; i < len(keyvals); i += 2 {
 		tm.msg.Properties[keyvals[i]] = keyvals[i+1]
@@ -84,6 +90,10 @@ func Output(data any) *FnOutput {
 }
 
 func OutputMessage(payload []byte) *FnOutput {
+	// TODO: consider refactor of builder pattern, user might want to explicitly send empty message, but with metadata
+	if len(payload) == 0 {
+		return &FnOutput{}
+	}
 	return &FnOutput{
 		primary: &TopicMsg{
 			msg: pulsar.ProducerMessage{
@@ -95,12 +105,18 @@ func OutputMessage(payload []byte) *FnOutput {
 
 // WithKey sets the key on a the primary output message.
 func (fo *FnOutput) WithKey(key string) *FnOutput {
+	if fo.primary == nil {
+		return fo
+	}
 	fo.primary.WithKey(key)
 	return fo
 }
 
 // WithProperty sets a single property on the primary output message.
 func (fo *FnOutput) WithProperty(key, value string) *FnOutput {
+	if fo.primary == nil {
+		return fo
+	}
 	fo.primary.WithProperty(key, value)
 	return fo
 }
@@ -108,6 +124,9 @@ func (fo *FnOutput) WithProperty(key, value string) *FnOutput {
 // WithProperties sets multiple properties on the primary output message.
 // WithProperties will panic if it receives an odd number of arguments.
 func (fo *FnOutput) WithProperties(keyvals ...string) *FnOutput {
+	if fo.primary == nil {
+		return fo
+	}
 	fo.primary.WithProperties(keyvals...)
 	return fo
 }
