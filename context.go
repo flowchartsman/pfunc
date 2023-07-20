@@ -95,6 +95,7 @@ func (c *FunctionContext) GetFuncTenant() string {
 }
 
 // GetFuncName returns the name given to the pulsar function
+// TODO: make globally accessible
 func (c *FunctionContext) GetFuncName() string {
 	return c.instanceConf.funcDetails.Name
 }
