@@ -71,7 +71,7 @@ var (
 		metricsLabelNames)
 	statTotalMessageSent = prometheus.NewGaugeVec(
 		prometheus.GaugeOpts{
-			Name: PulsarFunctionMetricsPrefix + TotalSuccessfullyProcessed,
+			Name: PulsarFunctionMetricsPrefix + TotalMessageSent,
 			Help: "Total number of messages sent.",
 		},
 		metricsLabelNames)
