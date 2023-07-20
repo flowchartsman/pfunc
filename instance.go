@@ -433,6 +433,7 @@ func (gi *goInstance) processResult(msgInput pulsar.Message, output *FnOutput) {
 					gi.ackInputMessage(msgInput)
 				}
 				gi.stats.incrTotalMessageSent()
+				gi.stats.incrOutputMessages()
 				gi.stats.incrTotalProcessedSuccessfully()
 			}))
 			return
@@ -463,10 +464,10 @@ func (gi *goInstance) respondMessage(inputMessage pulsar.Message, ack bool) {
 	}
 	// consumers are indexed by topic name only (no partition)
 	if ack {
-		gi.consumers[topicName.NameWithoutPartition()].Ack(inputMessage)
+		gi.consumers[topicName.WithoutPartition()].Ack(inputMessage)
 		return
 	}
-	gi.consumers[topicName.NameWithoutPartition()].Nack(inputMessage)
+	gi.consumers[topicName.WithoutPartition()].Nack(inputMessage)
 }
 
 func getIdleTimeout(timeoutMilliSecond time.Duration) time.Duration {
