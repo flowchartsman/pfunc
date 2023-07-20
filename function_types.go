@@ -127,7 +127,11 @@ type (
 )
 
 type Processor interface {
-	FnIn | FnInOut | FnCtxIn | FnCtxInOut | FnProcessor
+	~func(input []byte) error |
+		~func(input []byte) (any, error) |
+		~func(ctx context.Context, input []byte) error |
+		~func(ctx context.Context, input []byte) (any, error) |
+		~func(ctx context.Context, msg InputMessage) (*FnOutput, error)
 }
 
 func wrapFunction[P Processor](f P) FnProcessor {
@@ -135,11 +139,11 @@ func wrapFunction[P Processor](f P) FnProcessor {
 		panic("cannot accept nil function")
 	}
 	switch fn := any(f).(type) {
-	case FnIn:
+	case func(input []byte) error:
 		return func(ctx context.Context, msg InputMessage) (*FnOutput, error) {
 			return nil, fn(msg.Payload())
 		}
-	case FnInOut:
+	case func(input []byte) (any, error):
 		return func(_ context.Context, msg InputMessage) (*FnOutput, error) {
 			data, err := fn(msg.Payload())
 			if err != nil {
@@ -152,11 +156,11 @@ func wrapFunction[P Processor](f P) FnProcessor {
 				return Output(d), nil
 			}
 		}
-	case FnCtxIn:
+	case func(ctx context.Context, input []byte) error:
 		return func(ctx context.Context, msg InputMessage) (*FnOutput, error) {
 			return nil, fn(ctx, msg.Payload())
 		}
-	case FnCtxInOut:
+	case func(ctx context.Context, input []byte) (any, error):
 		return func(ctx context.Context, msg InputMessage) (*FnOutput, error) {
 			data, err := fn(ctx, msg.Payload())
 			if err != nil {
@@ -169,7 +173,9 @@ func wrapFunction[P Processor](f P) FnProcessor {
 				return Output(d), nil
 			}
 		}
+	case func(ctx context.Context, msg InputMessage) (*FnOutput, error):
+		return FnProcessor(fn)
 	default:
-		return fn.(FnProcessor)
+		panic("invalid function type")
 	}
 }
