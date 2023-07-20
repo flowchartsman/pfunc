@@ -119,10 +119,6 @@ func (fo *FnOutput) WithMessages(additionalMessages ...*TopicMsg) {
 // type SourceFn func() ([])
 
 type (
-	FnIn        func(input []byte) error
-	FnInOut     func(input []byte) (any, error)
-	FnCtxIn     func(ctx context.Context, input []byte) error
-	FnCtxInOut  func(ctx context.Context, input []byte) (any, error)
 	FnProcessor func(ctx context.Context, msg InputMessage) (*FnOutput, error)
 )
 
