@@ -28,10 +28,16 @@ import (
 
 // TopicName abstract a struct contained in a Topic
 type TopicName struct {
-	Domain    string
-	Namespace string
-	Name      string
-	Partition int
+	Domain       string
+	Namespace    string
+	Name         string
+	LocalName    string
+	Partition    int
+	partitionIdx int
+}
+
+func (tn *TopicName) WithoutPartition() string {
+	return tn.Name[:tn.partitionIdx]
 }
 
 const (
@@ -61,8 +67,6 @@ func ParseTopicName(topic string) (*TopicName, error) {
 		}
 	}
 
-	tn := &TopicName{}
-
 	// The fully qualified topic name can be in two different forms:
 	// new:    persistent://tenant/namespace/topic
 	// legacy: persistent://tenant/cluster/namespace/topic
@@ -71,7 +75,13 @@ func ParseTopicName(topic string) (*TopicName, error) {
 	if domain != "persistent" && domain != "non-persistent" {
 		return nil, errors.New("Invalid topic domain: " + domain)
 	}
-	tn.Domain = domain
+
+	tn := &TopicName{
+		Domain:       domain,
+		Name:         topic,
+		Partition:    -1,
+		partitionIdx: len(topic),
+	}
 
 	rest := parts[1]
 	var err error
@@ -86,38 +96,27 @@ func ParseTopicName(topic string) (*TopicName, error) {
 	if len(parts) == 3 {
 		// New topic name without cluster name
 		tn.Namespace = parts[0] + "/" + parts[1]
+		tn.LocalName = parts[2]
 	} else if len(parts) == 4 {
 		// Legacy topic name that includes cluster name
 		tn.Namespace = fmt.Sprintf("%s/%s/%s", parts[0], parts[1], parts[2])
+		tn.LocalName = parts[3]
 	} else {
-		return nil, errors.New("Invalid topic name: " + topic)
+		return nil, errors.New("invalid topic name: " + topic)
 	}
 
-	tn.Name = topic
-	tn.Partition, err = getPartitionIndex(topic)
-	if err != nil {
-		return nil, err
+	pIdx := strings.LastIndex(topic, partitionedTopicSuffix)
+	if pIdx >= 0 {
+		tn.partitionIdx = pIdx
+		pIdx += len(partitionedTopicSuffix)
+		if pIdx >= len(topic) {
+			return nil, errors.New("missing partition number")
+		}
+		tn.Partition, err = strconv.Atoi(topic[pIdx:])
+		if err != nil {
+			return nil, fmt.Errorf("invalid partition number: %q", topic[pIdx:])
+		}
+		tn.LocalName = tn.LocalName[:strings.LastIndex(tn.LocalName, partitionedTopicSuffix)]
 	}
-
 	return tn, nil
-}
-
-// NameWithoutPartition returns the topic name, sans the partition portion
-func (tn *TopicName) NameWithoutPartition() string {
-	if tn.Partition < 0 {
-		return tn.Name
-	}
-	idx := strings.LastIndex(tn.Name, partitionedTopicSuffix)
-	if idx > 0 {
-		return tn.Name[:idx]
-	}
-	return tn.Name
-}
-
-func getPartitionIndex(topic string) (int, error) {
-	if strings.Contains(topic, partitionedTopicSuffix) {
-		idx := strings.LastIndex(topic, "-") + 1
-		return strconv.Atoi(topic[idx:])
-	}
-	return -1, nil
 }
