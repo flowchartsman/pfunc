@@ -41,15 +41,18 @@ var (
 
 const (
 	PulsarFunctionMetricsPrefix = "pulsar_function_"
-
-	TotalSuccessfullyProcessed = "processed_successfully_total"
-	TotalSystemExceptions      = "system_exceptions_total"
-	TotalUserExceptions        = "user_exceptions_total"
-	ProcessLatencyMs           = "process_latency_ms"
-	LastInvocation             = "last_invocation"
-	TotalReceived              = "received_total"
+	TotalSuccessfullyProcessed  = "processed_successfully_total"
+	OutputMessages              = "output_messages"
+	TotalMessageSent            = "total_messages_sent"
+	TotalSystemExceptions       = "system_exceptions_total"
+	TotalUserExceptions         = "user_exceptions_total"
+	ProcessLatencyMs            = "process_latency_ms"
+	LastInvocation              = "last_invocation"
+	TotalReceived               = "received_total"
 
 	TotalSuccessfullyProcessed1min = "processed_successfully_total_1min"
+	TotalMessageSent1min           = "total_messages_sent_1min"
+	OutputMessages1min             = "output_messages_1min"
 	TotalSystemExceptions1min      = "system_exceptions_total_1min"
 	TotalUserExceptions1min        = "user_exceptions_total_1min"
 	ProcessLatencyMs1min           = "process_latency_ms_1min"
@@ -64,6 +67,18 @@ var (
 		prometheus.GaugeOpts{
 			Name: PulsarFunctionMetricsPrefix + TotalSuccessfullyProcessed,
 			Help: "Total number of messages processed successfully.",
+		},
+		metricsLabelNames)
+	statTotalMessageSent = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: PulsarFunctionMetricsPrefix + TotalMessageSent,
+			Help: "Total number of messages sent.",
+		},
+		metricsLabelNames)
+	statOutputMessages = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: PulsarFunctionMetricsPrefix + OutputMessages,
+			Help: "Number of messages sent to primary output topic.",
 		},
 		metricsLabelNames)
 	statTotalSysExceptions = prometheus.NewGaugeVec(
@@ -103,6 +118,17 @@ var (
 			Name: PulsarFunctionMetricsPrefix + TotalSuccessfullyProcessed1min,
 			Help: "Total number of messages processed successfully in the last 1 minute.",
 		}, metricsLabelNames)
+	statTotalMessageSent1min = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: PulsarFunctionMetricsPrefix + TotalMessageSent1min,
+			Help: "Total number of messages sent in the last 1 minute.",
+		}, metricsLabelNames)
+	statOutputMessages1min = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: PulsarFunctionMetricsPrefix + OutputMessages1min,
+			Help: "Number of messages sent to primary output topic in the last 1 minue.",
+		},
+		metricsLabelNames)
 	statTotalSysExceptions1min = prometheus.NewGaugeVec(
 		prometheus.GaugeOpts{
 			Name: PulsarFunctionMetricsPrefix + TotalSystemExceptions1min,
@@ -163,12 +189,16 @@ var reg *prometheus.Registry
 func init() {
 	reg = prometheus.NewRegistry()
 	reg.MustRegister(statTotalProcessedSuccessfully)
+	reg.MustRegister(statTotalMessageSent)
+	reg.MustRegister(statOutputMessages)
 	reg.MustRegister(statTotalSysExceptions)
 	reg.MustRegister(statTotalUserExceptions)
 	reg.MustRegister(statProcessLatencyMs)
 	reg.MustRegister(statLastInvocation)
 	reg.MustRegister(statTotalReceived)
 	reg.MustRegister(statTotalProcessedSuccessfully1min)
+	reg.MustRegister(statTotalMessageSent1min)
+	reg.MustRegister(statOutputMessages1min)
 	reg.MustRegister(statTotalSysExceptions1min)
 	reg.MustRegister(statTotalUserExceptions1min)
 	reg.MustRegister(statProcessLatencyMs1min)
@@ -186,12 +216,16 @@ type LatestException struct {
 // Be sure to use the constructor method: NewStatWithLabelValues
 type StatWithLabelValues struct {
 	statTotalProcessedSuccessfully     prometheus.Gauge
+	statTotalMessageSent               prometheus.Gauge
+	statOutputMessages                 prometheus.Gauge
 	statTotalSysExceptions             prometheus.Gauge
 	statTotalUserExceptions            prometheus.Gauge
 	statProcessLatencyMs               prometheus.Observer
 	statLastInvocation                 prometheus.Gauge
 	statTotalReceived                  prometheus.Gauge
 	statTotalProcessedSuccessfully1min prometheus.Gauge
+	statTotalMessageSent1min           prometheus.Gauge
+	statOutputMessages1min             prometheus.Gauge
 	statTotalSysExceptions1min         prometheus.Gauge
 	statTotalUserExceptions1min        prometheus.Gauge
 	statTotalReceived1min              prometheus.Gauge
@@ -204,12 +238,17 @@ type StatWithLabelValues struct {
 func NewStatWithLabelValues(metricsLabels ...string) StatWithLabelValues {
 	// as optimization
 	statTotalProcessedSuccessfully := statTotalProcessedSuccessfully.WithLabelValues(metricsLabels...)
+	statTotalMessageSent := statTotalMessageSent.WithLabelValues(metricsLabels...)
+	statOutputMessages := statOutputMessages.WithLabelValues(metricsLabels...)
 	statTotalSysExceptions := statTotalSysExceptions.WithLabelValues(metricsLabels...)
 	statTotalUserExceptions := statTotalUserExceptions.WithLabelValues(metricsLabels...)
 	statProcessLatencyMs := statProcessLatencyMs.WithLabelValues(metricsLabels...)
 	statLastInvocation := statLastInvocation.WithLabelValues(metricsLabels...)
 	statTotalReceived := statTotalReceived.WithLabelValues(metricsLabels...)
 	statTotalProcessedSuccessfully1min := statTotalProcessedSuccessfully1min.WithLabelValues(metricsLabels...)
+	statTotalMessageSent1min := statTotalMessageSent1min.WithLabelValues(metricsLabels...)
+	statOutputMessages1min := statOutputMessages1min.WithLabelValues(metricsLabels...)
+
 	statTotalSysExceptions1min := statTotalSysExceptions1min.WithLabelValues(metricsLabels...)
 	statTotalUserExceptions1min := statTotalUserExceptions1min.WithLabelValues(metricsLabels...)
 	// var _stat_process_latency_ms_1min = stat_process_latency_ms_1min.WithLabelValues(metrics_labels...)
@@ -217,12 +256,16 @@ func NewStatWithLabelValues(metricsLabels ...string) StatWithLabelValues {
 
 	statObj := StatWithLabelValues{
 		statTotalProcessedSuccessfully,
+		statTotalMessageSent,
+		statOutputMessages,
 		statTotalSysExceptions,
 		statTotalUserExceptions,
 		statProcessLatencyMs,
 		statLastInvocation,
 		statTotalReceived,
 		statTotalProcessedSuccessfully1min,
+		statTotalMessageSent1min,
+		statOutputMessages1min,
 		statTotalSysExceptions1min,
 		statTotalUserExceptions1min,
 		statTotalReceived1min,
@@ -303,6 +346,17 @@ func (stat *StatWithLabelValues) reportUserExceptionPrometheus(exception error) 
 	userExceptions.WithLabelValues(exceptionMetricLabels...).Set(1.0)
 }
 
+func (stat *StatWithLabelValues) incrTotalMessageSent() {
+	stat.statTotalMessageSent.Inc()
+	stat.statTotalMessageSent1min.Inc()
+}
+
+func (stat *StatWithLabelValues) incrOutputMessages() {
+	stat.statOutputMessages.Inc()
+	stat.statOutputMessages1min.Inc()
+	stat.incrTotalMessageSent()
+}
+
 func (stat *StatWithLabelValues) incrTotalProcessedSuccessfully() {
 	stat.statTotalProcessedSuccessfully.Inc()
 	stat.statTotalProcessedSuccessfully1min.Inc()
@@ -340,6 +394,8 @@ func (stat *StatWithLabelValues) incrTotalReceived() {
 
 func (stat *StatWithLabelValues) reset() {
 	stat.statTotalProcessedSuccessfully1min.Set(0.0)
+	stat.statTotalMessageSent1min.Set(0.0)
+	stat.statOutputMessages1min.Set(0.0)
 	stat.statTotalUserExceptions1min.Set(0.0)
 	stat.statTotalSysExceptions1min.Set(0.0)
 	stat.statTotalReceived1min.Set(0.0)
